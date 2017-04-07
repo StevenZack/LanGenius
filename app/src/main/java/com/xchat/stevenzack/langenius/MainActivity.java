@@ -14,6 +14,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1://on File received
                     Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.newFile)+msg.obj.toString(),Toast.LENGTH_SHORT).show();
+                    ((TextView)findViewById(R.id.txt_storagePath)).setVisibility(View.INVISIBLE);
                     break;
                 case 2:
                     if (msg.obj!=null) {
@@ -117,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 showFileChooser();
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        }
     }
     @Override
     protected void onDestroy() {

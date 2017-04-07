@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LanGenius</string>
+    <string name="app_name">局域网精灵</string>
     <string name="language">zh</string>
+    <string name="addFileFailed">失败, 请更换其他文件管理器!</string>
+    <string name="cbhasbeenshared">复制内容已分享到局域网</string>
+    <string name="newClipboard">收到新的复制内容</string>
+    <string name="newFile">收到新的文件:</string>
+    <string name="openinbrowser">打开浏览器</string>
+    <string name="plzinstallAFileManager">请更换其他文件管理器!</string>
+    <string name="shareFiles">"分享的文件 : "</string>
+    <string name="storagepath">文件位于/sdcard/</string>
 </resources>

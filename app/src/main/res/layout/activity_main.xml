@@ -43,18 +43,22 @@
         android:layout_marginTop="180dp"
         android:layout_marginLeft="10dp"
         android:layout_height="wrap_content" />
-    <Button
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="#fff"
         android:layout_marginTop="170dp"
-        android:layout_gravity="end"
-        android:id="@+id/bt_openbrowser"
         android:elevation="10dp"
-        android:padding="10dp"
+        android:layout_gravity="end"
         android:layout_marginRight="10dp"
-        android:text="@string/openinbrowser"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="#fff"
+            android:id="@+id/bt_openbrowser"
+            android:padding="10dp"
+            android:text="@string/openinbrowser"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -81,6 +85,15 @@
         android:elevation="15dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_action_name" />
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/txt_storagePath"
+        android:text="@string/storagepath"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="bottom"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content" />
 </FrameLayout>
