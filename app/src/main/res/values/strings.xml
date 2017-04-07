@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">LanGenius</string>
+    <string name="cbhasbeenshared">Clipboard has been shared</string>
+    <string name="shareFiles">Shared Files :</string>
+    <string name="openinbrowser">Open in browser</string>
+    <string name="language">en</string>
+    <string name="newClipboard">New Clipboard !</string>
+    <string name="newFile">New File :</string>
+    <string name="plzinstallAFileManager">Please install a File Manager</string>
+    <string name="addFileFailed">Add failed ,plz try another File Manager</string>
+</resources>
