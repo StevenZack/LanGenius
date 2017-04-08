@@ -9,5 +9,5 @@
     <string name="openinbrowser">打开浏览器</string>
     <string name="plzinstallAFileManager">请更换其他文件管理器!</string>
     <string name="shareFiles">"分享的文件 : "</string>
-    <string name="storagepath">文件位于/sdcard/</string>
+    <string name="storagepath">默认文件接收路径:/sdcard/</string>
 </resources>

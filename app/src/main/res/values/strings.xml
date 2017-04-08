@@ -8,5 +8,5 @@
     <string name="newFile">New File :</string>
     <string name="plzinstallAFileManager">Please install a File Manager</string>
     <string name="addFileFailed">Add failed ,plz try another File Manager</string>
-    <string name="storagepath">"Received file in /sdcard/ "</string>
+    <string name="storagepath">\"Default Received file path: /sdcard/ \"</string>
 </resources>
