@@ -190,6 +190,7 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 	filename := r.FormValue("filename")
 	for _, v := range tdata.FileSlice {
 		if v.FileName == filename {
+			w.Header().Add("Content-Disposition", f.Sprintf("attachment; filename=%s", filename))
 			http.ServeFile(w, r, v.FilePath)
 			return
 		}
