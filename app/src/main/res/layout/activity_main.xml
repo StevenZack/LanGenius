@@ -40,10 +40,10 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="76dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="74dp"
             android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_set_as" />
+            app:srcCompat="@drawable/open_browser" />
     </FrameLayout>
     <TextView
         android:layout_width="match_parent"
