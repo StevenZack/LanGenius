@@ -8,73 +8,59 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:background="@color/colorPrimaryDark"
-        android:layout_height="160dp">
+        android:elevation="10dp"
+        android:layout_height="110dp">
         <TextView
             android:layout_width="match_parent"
             android:text="@string/app_name"
             android:textColor="#fff"
-            android:textSize="40dp"
-            android:layout_marginLeft="10dp"
+            android:textSize="28sp"
+            android:layout_marginLeft="12dp"
             android:layout_height="wrap_content" />
         <TextView
-            android:layout_width="match_parent"
-            android:text="@string/cbhasbeenshared"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:layout_width="200dp"
-            android:text="asgdhj\nasgdjhga"
-            android:textColor="#fff"
-            android:id="@+id/cb_text"
-            android:layout_marginTop="70dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_height="90dp" />
-    </FrameLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="192.168.1.109:4444"
-        android:textSize="20dp"
-        android:id="@+id/txt_hostname"
-        android:layout_marginTop="180dp"
-        android:layout_marginLeft="10dp"
-        android:layout_height="wrap_content" />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_marginTop="170dp"
-        android:elevation="15dp"
-        android:layout_gravity="end"
-        android:background="@color/colorPrimaryDark"
-        android:layout_marginRight="10dp"
-        android:layout_height="wrap_content">
-        <Button
             android:layout_width="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="#fff"
-            android:elevation="15dp"
-            android:id="@+id/bt_openbrowser"
-            android:padding="10dp"
-            android:text="@string/openinbrowser"
+            android:textColor="#ddd"
+            android:text="Site:192.168.1.109:4444"
+            android:textSize="18sp"
+            android:id="@+id/txt_hostname"
+            android:layout_marginTop="48dp"
+            android:layout_marginLeft="12dp"
             android:layout_height="wrap_content" />
-    </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/cbhasbeenshared"
+            android:textColor="#ccc"
+            android:layout_marginLeft="12dp"
+            android:textSize="13sp"
+            android:layout_marginTop="84dp"
+            android:layout_height="wrap_content" />
 
+        <ImageButton
+            android:id="@+id/bt_openbrowser"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="76dp"
+            android:background="#00000000"
+            app:srcCompat="@android:drawable/ic_menu_set_as" />
+    </FrameLayout>
     <TextView
         android:layout_width="match_parent"
         android:text="@string/shareFiles"
-        android:textStyle="bold"
+        android:textSize="18sp"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_marginTop="230dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginTop="126dp"
+        android:layout_marginLeft="12dp"
         android:layout_height="wrap_content" />
     <ListView
         android:layout_width="match_parent"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="160dp"
+        android:divider="@null"
         android:id="@+id/main_listview"
-        android:layout_height="200dp">
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_height="match_parent">
     </ListView>
 
     <android.support.design.widget.FloatingActionButton
@@ -89,12 +75,12 @@
         app:srcCompat="@drawable/ic_action_name" />
     <TextView
         android:layout_width="wrap_content"
-        android:id="@+id/txt_storagePath"
         android:text="@string/storagepath"
         android:textColor="@color/colorPrimaryDark"
         android:layout_gravity="bottom"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"
+        android:id="@+id/main_frcv_path"
         android:layout_marginLeft="20dp"
         android:layout_height="wrap_content" />
 </FrameLayout>

@@ -6,8 +6,7 @@
     <string name="cbhasbeenshared">复制内容已分享到局域网</string>
     <string name="newClipboard">收到新的复制内容</string>
     <string name="newFile">收到新的文件:</string>
-    <string name="openinbrowser">打开浏览器</string>
-    <string name="plzinstallAFileManager">请更换其他文件管理器!</string>
     <string name="shareFiles">"分享的文件 : "</string>
-    <string name="storagepath">默认文件接收路径:/sdcard/</string>
+    <string name="storagepath">文件接收路径:/sdcard/</string>
+    <string name="websiteAddress">"主页地址 : "</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,7 +22,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,7 @@ import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 import LanGenius.JavaHandler;
@@ -52,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1://on File received
                     Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.newFile)+msg.obj.toString(),Toast.LENGTH_SHORT).show();
-                    ((TextView)findViewById(R.id.txt_storagePath)).setVisibility(View.INVISIBLE);
                     break;
                 case 2:
                     if (msg.obj!=null) {
@@ -60,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             Log.d(TAG, "onActivityResult: PATH ==" + path);
                             String[] strs = path.split("/");
-                            strings.add(strs[strs.length - 1]);
-                            arrayAdapter.notifyDataSetChanged();
+                            HashMap<String,String> hashMap=new HashMap<>();
+                            hashMap.put("FileName",strs[strs.length-1]);
+                            strings.add(hashMap);
+                            simpleAdapter.notifyDataSetChanged();
                             LanGenius.addFile(path);
                         } catch (Exception e) {
                             Log.d(TAG, "onActivityResult: Exception  == " + e.toString());
@@ -74,44 +79,45 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-    private TextView cb_text;
     private TextView txt_ip;
     private ListView listView;
-    private List<String> strings=new ArrayList<>();
-    private ArrayAdapter arrayAdapter;
+    private List<HashMap<String,String>> strings=new ArrayList<>();
+    private SimpleAdapter simpleAdapter;
     private FloatingActionButton floatingActionButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        cb_text=(TextView)findViewById(R.id.cb_text);
         clipboardManager=(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
                 LanGenius.setClipboard(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
-                cb_text.setText(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
             }
         });
         if (clipboardManager.getPrimaryClip()!=null) {
             LanGenius.setClipboard(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
-            cb_text.setText(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
         }
         txt_ip=(TextView)findViewById(R.id.txt_hostname);
-        txt_ip.setText(getHostIP()+":4444");
+        String str_IP=getHostIP();
+        txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP==null?"localhost":str_IP)+":4444");
         isStoragePermissionGranted();
         String lang=MainActivity.this.getString(R.string.language);
         LanGenius.start(lang,new MyJavaHandler());
-        ((Button)findViewById(R.id.bt_openbrowser)).setOnClickListener(new View.OnClickListener() {
+        ((ImageButton)findViewById(R.id.bt_openbrowser)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://localhost:4444"));
+                String tempstr=getHostIP();
+                if (tempstr==null)
+                    tempstr="localhost";
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+tempstr+":4444"));
                 startActivity(browserIntent);
             }
         });
         listView=(ListView)findViewById(R.id.main_listview);
-        arrayAdapter= new ArrayAdapter<>(this,android.R.layout.simple_expandable_list_item_1,strings);
-        listView.setAdapter(arrayAdapter);
+//        simpleAdapter=new SimpleAdapter(this,strings,R.layout.listview_item,new String[]{"FileName"},new int[]{R.id.});
+        simpleAdapter=new SimpleAdapter(this,strings,R.layout.listview_item,new String[]{"FileName"},new int[]{R.id.listview_txt_filename});
+        listView.setAdapter(simpleAdapter);
         floatingActionButton=(FloatingActionButton)findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         }
+        SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
+        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.storagepath));
+        ((TextView)findViewById(R.id.main_frcv_path)).setText(str);
     }
     @Override
     protected void onDestroy() {
@@ -133,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
         try {
             startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
         } catch (android.content.ActivityNotFoundException ex) {
