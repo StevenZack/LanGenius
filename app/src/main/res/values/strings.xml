@@ -10,4 +10,5 @@
     <string name="websiteAddress">"My Address : "</string>
     <string name="sp_settings" translatable="false">settings</string>
     <string name="sp_sub_frcv_path" translatable="false">frcv_path</string>
+    <string name="openFileFailed">No handler for this type of file.</string>
 </resources>

@@ -9,4 +9,5 @@
     <string name="shareFiles">"分享的文件 : "</string>
     <string name="storagepath">文件接收路径:/sdcard/</string>
     <string name="websiteAddress">"主页地址 : "</string>
+    <string name="openFileFailed">打开文件失败</string>
 </resources>

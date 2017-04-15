@@ -1,6 +1,7 @@
 package com.xchat.stevenzack.langenius;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,14 +13,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,6 +38,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -41,6 +54,8 @@ import java.util.List;
 
 import LanGenius.JavaHandler;
 import LanGenius.LanGenius;
+
+import static android.provider.Settings.AUTHORITY;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -56,8 +71,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 1://on File received
                     Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.newFile)+msg.obj.toString(),Toast.LENGTH_SHORT).show();
+                    Message newmsg=new Message();
+                    newmsg.arg1=2;
+                    newmsg.obj="/sdcard/"+msg.obj.toString();
+                    Log.d(TAG, "handleMessage: newmsg.obj="+newmsg.obj.toString());
+                    handler.sendMessage(newmsg);
                     break;
-                case 2:
+                case 2://add file
                     if (msg.obj!=null) {
                         String path = msg.obj.toString();
                         try {
@@ -65,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                             String[] strs = path.split("/");
                             HashMap<String,String> hashMap=new HashMap<>();
                             hashMap.put("FileName",strs[strs.length-1]);
+                            hashMap.put("Path",path);
                             strings.add(hashMap);
                             simpleAdapter.notifyDataSetChanged();
                             LanGenius.addFile(path);
@@ -101,6 +122,26 @@ public class MainActivity extends AppCompatActivity {
         txt_ip=(TextView)findViewById(R.id.txt_hostname);
         String str_IP=getHostIP();
         txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP==null?"localhost":str_IP)+":4444");
+        ((ImageButton)findViewById(R.id.main_optionMenu)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu=new PopupMenu(MainActivity.this,v);
+                popupMenu.getMenuInflater().inflate(R.menu.main_menu,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.main_menu_kc:
+                                Intent intent=new Intent(MainActivity.this,KCActivity.class);
+                                startActivity(intent);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
         isStoragePermissionGranted();
         String lang=MainActivity.this.getString(R.string.language);
         LanGenius.start(lang,new MyJavaHandler());
@@ -115,9 +156,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         listView=(ListView)findViewById(R.id.main_listview);
-//        simpleAdapter=new SimpleAdapter(this,strings,R.layout.listview_item,new String[]{"FileName"},new int[]{R.id.});
         simpleAdapter=new SimpleAdapter(this,strings,R.layout.listview_item,new String[]{"FileName"},new int[]{R.id.listview_txt_filename});
         listView.setAdapter(simpleAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i=new Intent(Intent.ACTION_VIEW, FileProvider.getUriForFile(MainActivity.this, MainActivity.this.getApplicationContext().getPackageName() + ".provider", new File(strings.get(position).get("Path"))));
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    startActivity(i);
+                }catch (Exception e){
+                    Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.openFileFailed), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         floatingActionButton=(FloatingActionButton)findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +183,48 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
         String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.storagepath));
         ((TextView)findViewById(R.id.main_frcv_path)).setText(str);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InputStream is=null;
+                OutputStream os=null;
+                try {
+                    File file=new File("/data/data/com.xchat.stevenzack.langenius/KC_Linux");
+                    is=getResources().getAssets().open("KC_Linux");
+
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        os = new FileOutputStream(file);
+                        byte[] buf = new byte[10240];
+                        int l;
+                        while ((l = is.read(buf)) > 0) {
+                            os.write(buf, 0, l);
+                        }
+                        is.close();
+                        os.close();
+                    }
+                } catch (IOException e) {
+                    Log.d(TAG, "run: " + e.toString());
+                }
+                try {
+                    File file=new File("/data/data/com.xchat.stevenzack.langenius/KC_Windows.exe");
+                    is=getResources().getAssets().open("KC_Windows");
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        os = new FileOutputStream(file);
+                        byte[] buf = new byte[10240];
+                        int l;
+                        while ((l = is.read(buf)) > 0) {
+                            os.write(buf, 0, l);
+                        }
+                        is.close();
+                        os.close();
+                    }
+                } catch (IOException e) {
+                    Log.d(TAG, "run: " + e.toString());
+                }
+            }
+        }).start();
     }
     @Override
     protected void onDestroy() {
@@ -155,24 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode==RESULT_OK){
                     Uri uri=data.getData();
                     Log.d("spy","##FileSharer: uri="+uri.toString());
-//                    try {
-//                        String path=getPath(this,uri);
-//                        Log.d(TAG, "onActivityResult: PATH ================"+path);
-//                        String[] strs = path.split("/");
-//                        strings.add(strs[strs.length-1]);
-//                        listView.notifyAll();
-//                        LanGenius.addFile(path);
-//                    } catch (Exception e) {
-//                        Log.d(TAG, "onActivityResult: "+e.toString());
-//                        Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.addFileFailed),Toast.LENGTH_SHORT).show();
-//                    }
-//                    String[] proj = {MediaStore.Images.Media.DATA};
-//                    Cursor actualimagecursor = managedQuery(uri, proj, null, null, null);
-//                    int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//                    actualimagecursor.moveToFirst();
-//                    String img_path = actualimagecursor.getString(actual_image_column_index);
-//                    File file = new File(img_path);
-//                    Toast.makeText(MainActivity.this, file.toString(), Toast.LENGTH_SHORT).show();
                     String path=FileUtils.getPath(MainActivity.this,uri);
                     Message msg=new Message();
                     msg.arg1=2;
@@ -252,5 +328,22 @@ public class MainActivity extends AppCompatActivity {
         return hostIp;
 
     }
+    private String fileExt(String url) {
+        if (url.indexOf("?") > -1) {
+            url = url.substring(0, url.indexOf("?"));
+        }
+        if (url.lastIndexOf(".") == -1) {
+            return null;
+        } else {
+            String ext = url.substring(url.lastIndexOf(".") + 1);
+            if (ext.indexOf("%") > -1) {
+                ext = ext.substring(0, ext.indexOf("%"));
+            }
+            if (ext.indexOf("/") > -1) {
+                ext = ext.substring(0, ext.indexOf("/"));
+            }
+            return ext.toLowerCase();
 
+        }
+    }
 }

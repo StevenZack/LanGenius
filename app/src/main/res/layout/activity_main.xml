@@ -19,7 +19,7 @@
             android:layout_height="wrap_content" />
         <TextView
             android:layout_width="wrap_content"
-            android:textColor="#ddd"
+            android:textColor="#eee"
             android:text="Site:192.168.1.109:4444"
             android:textSize="18sp"
             android:id="@+id/txt_hostname"
@@ -44,6 +44,16 @@
             android:layout_marginTop="74dp"
             android:background="#00000000"
             app:srcCompat="@drawable/open_browser" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:background="#00000000"
+            android:layout_marginRight="12dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:id="@+id/main_optionMenu"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_menu_black_24dp" />
     </FrameLayout>
     <TextView
         android:layout_width="match_parent"
