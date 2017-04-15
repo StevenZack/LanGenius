@@ -187,24 +187,33 @@ func home(w http.ResponseWriter, r *http.Request) {
             return "other";
         }
         function detectLang(){
-            var language_zh_cn = "zh-CN";  
-            var currentLang = navigator.language;  
+            if (navigator.language=="zh-CN") {
+            	document.getElementById("kcenabled").innerHTML="遥控器功能已开启"
+            }
         }
 	</script>
 	<style type="text/css">
 		.Mybutton{
-			border: 5px solid #0088ff;
-			border-radius: 10px;
 			height: 30px;
 			line-height: 30px;
-			
+			box-shadow: 2px 2px 15px #000;
 			cursor: pointer;
+			background-color: #FF5722;
+			border-radius: 10px;
+			width: 230px;
+		}
+		.wrapper{
+			background-color: #fff;
+			display: inline-block;
+			padding: 5px;
+			box-shadow: 2px 2px 10px #000;
+			border-radius: 10px;
 		}
 	</style>
 </head>
-<body>
+<body style="background-color: #58c6d5">
 <center>
-<table>
+<div class="wrapper"><table>
 	<tr>
 		<th style="color: #D81B60">{{.Clipboard}}</th>
 	</tr>
@@ -222,6 +231,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 	<tr>
 	<td colspan="2"><hr></td>
 	</tr>
+</table></div>
+<br><br>
+<div class="wrapper">
+<table>
 	<tr>
 		<th style="color: #1E88E5">{{.Files}}</th>
 	</tr>
@@ -246,16 +259,17 @@ func home(w http.ResponseWriter, r *http.Request) {
 	<tr><td colspan="2">
 	    <div id="result"></div>
 	</td></tr>
-	<tr><td><br><br><br><br></td></tr>
-	{{if .KC_enabled}}
-	<tr><td colspan="2">
-		<div class="Mybutton" id="kcbt" align="center" onmouseover="this.setAttribute('style','box-shadow: 2px 2px 15px #0088ff')" onmouseout="this.setAttribute('style','')" onclick="downloadKC()">{{.KCenabled}}</div>
-	</td></tr>
-	{{end}}
 </table>
+</div><br>
+	{{if .KC_enabled}}
+	<br><br>
+		<div class="Mybutton" id="kcbt" align="center" onmouseover="this.setAttribute('style','box-shadow: 3px 3px 30px #000')" onmouseout="this.setAttribute('style','2px 2px 15px #000')" onclick="downloadKC()"><font color="#fff"><b id="kcenabled">Remote Controller Enabled</b></font></div>
+	<br>
+	{{end}}
 </center>
 </body>
-</html>`)
+</html>
+<script type="text/javascript">detectLang()</script>`)
 	t.Execute(w, tdata)
 }
 func AddFile(str string) error {

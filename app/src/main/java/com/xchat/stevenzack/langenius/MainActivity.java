@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 try {
                     File file=new File("/data/data/com.xchat.stevenzack.langenius/KC_Windows.exe");
-                    is=getResources().getAssets().open("KC_Windows");
+                    is=getResources().getAssets().open("KC_Windows.exe");
                     if (!file.exists()) {
                         file.createNewFile();
                         os = new FileOutputStream(file);
