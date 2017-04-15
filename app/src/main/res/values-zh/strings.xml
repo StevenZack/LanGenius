@@ -7,8 +7,14 @@
     <string name="newClipboard">收到新的复制内容</string>
     <string name="newFile">收到新的文件:</string>
     <string name="shareFiles">"分享的文件 : "</string>
-    <string name="storagepath">文件接收路径:/sdcard/</string>
+    <string name="storagepath">文件接收路径:</string>
     <string name="websiteAddress">"主页地址 : "</string>
     <string name="openFileFailed">打开文件失败</string>
     <string name="keyboardController">遥控器</string>
+    <string name="settings">设置</string>
+    <string name="str_default_port">默认端口号</string>
+    <string name="str_setDefaultPort">设置默认端口号</string>
+    <string name="str_setDefaultFileRecvPath">设置文件接收路径</string>
+    <string name="str_ok">确定</string>
+    <string name="str_cancel">取消</string>
 </resources>

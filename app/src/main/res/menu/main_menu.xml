@@ -4,4 +4,7 @@
         android:title="@string/keyboardController"
         android:id="@+id/main_menu_kc"
         />
+    <item
+        android:title="@string/settings"
+        android:id="@+id/main_menu_settings"/>
 </menu>

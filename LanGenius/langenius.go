@@ -61,7 +61,7 @@ func (javaClass) OnClipboardReceived(str string) {
 func (javaClass) OnFileReceived(str string) {
 	f.Println("OnFileReceived():" + str)
 }
-func Start(language string, jh JavaHandler) {
+func Start(language string, jh JavaHandler, port string) {
 	if language == "zh" {
 		tdata.Clipboard = "复制内容"
 		tdata.Copy = "复制"
@@ -76,7 +76,7 @@ func Start(language string, jh JavaHandler) {
 	mux["/uploadFile"] = uploadFile
 	mux["/downloadKC"] = downloadKC
 	go func() {
-		server = http.Server{Addr: ":4444", Handler: &MyHandler{}}
+		server = http.Server{Addr: port, Handler: &MyHandler{}}
 		err := server.ListenAndServe()
 		if err != nil {
 			f.Println(err)

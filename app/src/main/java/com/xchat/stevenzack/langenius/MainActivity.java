@@ -121,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
         }
         txt_ip=(TextView)findViewById(R.id.txt_hostname);
         String str_IP=getHostIP();
-        txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP==null?"localhost":str_IP)+":4444");
+        final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
+        final String default_port=sp_settings.getString(MainActivity.this.getString(R.string.sp_sub_port),MainActivity.this.getString(R.string.default_port));
+        txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP==null?"localhost":str_IP)+default_port);
         ((ImageButton)findViewById(R.id.main_optionMenu)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent=new Intent(MainActivity.this,KCActivity.class);
                                 startActivity(intent);
                                 break;
+                            case R.id.main_menu_settings:
+                                Intent intent1=new Intent(MainActivity.this,SettingsActivity.class);
+                                startActivity(intent1);
+                                break;
                         }
                         return true;
                     }
@@ -144,14 +150,14 @@ public class MainActivity extends AppCompatActivity {
         });
         isStoragePermissionGranted();
         String lang=MainActivity.this.getString(R.string.language);
-        LanGenius.start(lang,new MyJavaHandler());
+        LanGenius.start(lang,new MyJavaHandler(),default_port);
         ((ImageButton)findViewById(R.id.bt_openbrowser)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tempstr=getHostIP();
                 if (tempstr==null)
                     tempstr="localhost";
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+tempstr+":4444"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+tempstr+default_port));
                 startActivity(browserIntent);
             }
         });
@@ -180,9 +186,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         }
-        SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
-        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.storagepath));
-        ((TextView)findViewById(R.id.main_frcv_path)).setText(str);
+        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath));
+        ((TextView)findViewById(R.id.main_frcv_path)).setText(this.getString(R.string.storagepath)+str);
         new Thread(new Runnable() {
             @Override
             public void run() {
