@@ -1,40 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.xchat.stevenzack.langenius.KCActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="#fff"
-        android:elevation="10dp"
-        android:layout_height="wrap_content">
-        <Spinner
-            android:id="@+id/kc_spinner"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/kc_edit_text"
-            android:hint="command e"
-            android:inputType="textVisiblePassword"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:background="@null"
-        android:layout_gravity="center"
-        android:id="@+id/kc_press_bt"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/circle_primary_dark" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/kc_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <ScrollView
         android:layout_width="match_parent"

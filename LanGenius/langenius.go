@@ -405,3 +405,10 @@ func isExisted(as []*net.UDPAddr, a *net.UDPAddr) bool {
 	}
 	return false
 }
+func GetUDPConnections() string {
+	var a []string
+	for _, v := range kc_adds {
+		a = append(a, v.String())
+	}
+	return strings.Join(a, "#")
+}

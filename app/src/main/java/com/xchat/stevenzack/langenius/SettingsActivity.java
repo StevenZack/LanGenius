@@ -2,6 +2,8 @@ package com.xchat.stevenzack.langenius;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -79,5 +81,8 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        }
     }
 }
