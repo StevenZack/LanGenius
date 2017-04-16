@@ -304,7 +304,7 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 func uploadFile(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(2 << 30)
+	r.ParseMultipartForm(1 << 30)
 	file, handler, err := r.FormFile("myUploadFile")
 	if err != nil {
 		f.Println(err)

@@ -237,6 +237,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
+        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath));
+        ((TextView)findViewById(R.id.main_frcv_path)).setText(this.getString(R.string.storagepath)+str);
+    }
+
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
