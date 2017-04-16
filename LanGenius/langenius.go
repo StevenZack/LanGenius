@@ -126,6 +126,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	                if (xhr.readyState == 4 && xhr.status == 200) {
 	                    var result = xhr.responseText;
 	                    document.getElementById("result").innerHTML = result;
+	                    setTimeout("window.location.href='/'", 1000)
 	                }
 	            }
 	            //进度条部分
@@ -144,9 +145,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 		function downloadKC(){
 			var myos=detectOS()
 			if (navigator.language=="zh-CN") {
-				if (confirm("是否下载受控端 for "+myos+" ?")) {
-					window.location.href="downloadKC?os="+myos
-				}
 				if (myos=="Windows") {
 					if (confirm("是否下载受控端 for Windows x64 ?")) {
 					window.location.href="downloadKC?os="+myos
@@ -239,7 +237,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		<th style="color: #1E88E5">{{.Files}}</th>
 	</tr>
 	<tr>
-		<td>
+		<td colspan="2">
 		{{range .FileSlice}}
 			<a href="/downloadFile?filename={{.FileName}}">
 			{{.FileName}}</a><br>
@@ -306,7 +304,7 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 func uploadFile(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(1 << 30)
+	r.ParseMultipartForm(2 << 30)
 	file, handler, err := r.FormFile("myUploadFile")
 	if err != nil {
 		f.Println(err)
@@ -328,11 +326,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 func downloadKC(w http.ResponseWriter, r *http.Request) {
 	var myos = r.FormValue("os")
 	if myos == "Linux" {
-		filename := "KC_Linux"
+		filename := "kc_linux_x64"
 		w.Header().Add("Content-Disposition", f.Sprintf("attachment; filename=%s", filename))
 		http.ServeFile(w, r, "/data/data/com.xchat.stevenzack.langenius/"+filename)
 	} else {
-		filename := "KC_Windows.exe"
+		filename := "kc_windows_x64.exe"
 		w.Header().Add("Content-Disposition", f.Sprintf("attachment; filename=%s", filename))
 		http.ServeFile(w, r, "/data/data/com.xchat.stevenzack.langenius/"+filename)
 	}
@@ -356,7 +354,8 @@ func StartKC(jh JavaKCHandler) {
 	tdata.KC_enabled = true
 	kc_addr, _ = net.ResolveUDPAddr("udp", ":9943")
 	kc_adbr, _ = net.ResolveUDPAddr("udp", "255.255.255.255:9942")
-	c, err := net.ListenUDP("udp", kc_addr)
+	var err error
+	c, err = net.ListenUDP("udp", kc_addr)
 	if err != nil {
 		f.Println(err)
 		return
@@ -385,8 +384,10 @@ func readKC(c *net.UDPConn) {
 			return
 		}
 		if string(b[:n]) == "LanGenius-from-desktop" {
-			kc_adds = append(kc_adds, ra)
-			kchandler.OnDeviceDetected(ra.String())
+			if !isExisted(kc_adds, ra) {
+				kc_adds = append(kc_adds, ra)
+				kchandler.OnDeviceDetected(ra.String())
+			}
 		}
 	}
 }
@@ -395,4 +396,12 @@ func sendKCPulse() {
 		c.WriteToUDP([]byte("LanGenius-from-android"), kc_adbr)
 		time.Sleep(time.Second * 3)
 	}
+}
+func isExisted(as []*net.UDPAddr, a *net.UDPAddr) bool {
+	for _, v := range as {
+		if v.String() == a.String() {
+			return true
+		}
+	}
+	return false
 }

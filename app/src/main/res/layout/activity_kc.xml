@@ -22,6 +22,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:id="@+id/kc_edit_text"
+            android:hint="command e"
             android:inputType="textVisiblePassword"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -30,6 +32,20 @@
         android:layout_width="wrap_content"
         android:background="@null"
         android:layout_gravity="center"
+        android:id="@+id/kc_press_bt"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/circle_primary_dark" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="@string/str_kc_manual"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+
 </LinearLayout>

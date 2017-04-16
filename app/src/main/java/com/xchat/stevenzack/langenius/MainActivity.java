@@ -194,8 +194,8 @@ public class MainActivity extends AppCompatActivity {
                 InputStream is=null;
                 OutputStream os=null;
                 try {
-                    File file=new File("/data/data/com.xchat.stevenzack.langenius/KC_Linux");
-                    is=getResources().getAssets().open("KC_Linux");
+                    File file=new File("/data/data/com.xchat.stevenzack.langenius/kc_linux_x64");
+                    is=getResources().getAssets().open("kc_linux_x64");
 
                     if (!file.exists()) {
                         file.createNewFile();
@@ -212,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "run: " + e.toString());
                 }
                 try {
-                    File file=new File("/data/data/com.xchat.stevenzack.langenius/KC_Windows.exe");
-                    is=getResources().getAssets().open("KC_Windows.exe");
+                    File file=new File("/data/data/com.xchat.stevenzack.langenius/kc_windows_x64.exe");
+                    is=getResources().getAssets().open("kc_windows_x64.exe");
                     if (!file.exists()) {
                         file.createNewFile();
                         os = new FileOutputStream(file);
