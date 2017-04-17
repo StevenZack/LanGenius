@@ -28,5 +28,12 @@
             android:id="@+id/set_bt_frcvpath"
             android:text="@string/storagepath"
             android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:textAllCaps="false"
+            android:id="@+id/set_bt_html"
+            android:text="@string/custom_html_file"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </FrameLayout>

@@ -1,21 +1,26 @@
 package com.xchat.stevenzack.langenius;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import LanGenius.LanGenius;
 
 public class SettingsActivity extends AppCompatActivity {
-    private Button bt_filercvpath,bt_default_port;
+    private Button bt_filercvpath,bt_default_port,bt_html;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +89,41 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        bt_html=(Button)findViewById(R.id.set_bt_html);
+        bt_html.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileChooser();
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         }
+    }
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case 2233:
+                if (resultCode==RESULT_OK){
+                    Uri uri=data.getData();
+                    Log.d("spy","##FileSharer: uri="+uri.toString());
+                    String path=FileUtils.getPath(SettingsActivity.this,uri);
+                    LanGenius.setHtmlPath(path);
+                    Toast.makeText(SettingsActivity.this,SettingsActivity.this.getString(R.string.str_setted_succeed),Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

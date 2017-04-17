@@ -116,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
                 LanGenius.setClipboard(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
             }
         });
-        if (clipboardManager.getPrimaryClip()!=null) {
+        if (clipboardManager.getPrimaryClip()!=null&&clipboardManager.getPrimaryClip().getItemAt(0)!=null&&
+                clipboardManager.getPrimaryClip().getItemAt(0).getText()!=null) {
             LanGenius.setClipboard(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
         }
         txt_ip=(TextView)findViewById(R.id.txt_hostname);

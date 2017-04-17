@@ -19,6 +19,7 @@ var (
 	server          http.Server
 	javahandler     JavaHandler
 	tdata           TData
+	html_file_path  string
 	str_storagePath string
 )
 
@@ -90,8 +91,9 @@ func Stop() {
 	}
 }
 func home(w http.ResponseWriter, r *http.Request) {
-	t := template.New("homeTPL")
-	t.Parse(`<!DOCTYPE html>
+	if html_file_path == "" {
+		t := template.New("homeTPL")
+		t.Parse(`<!DOCTYPE html>
 <html>
 <head>
 	<title>shareMe</title>
@@ -268,7 +270,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 </body>
 </html>
 <script type="text/javascript">detectLang()</script>`)
-	t.Execute(w, tdata)
+		t.Execute(w, tdata)
+	} else {
+		t, err := template.ParseFiles(html_file_path)
+		if err != nil {
+			f.Fprint(w, err.Error())
+		} else {
+			t.Execute(w, nil)
+		}
+	}
+}
+func SetHtmlPath(str string) {
+	html_file_path = str
 }
 func AddFile(str string) error {
 	fns := strings.Split(str, "/")
@@ -304,7 +317,7 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 func uploadFile(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(1 << 30)
+	r.ParseMultipartForm(10 << 30)
 	file, handler, err := r.FormFile("myUploadFile")
 	if err != nil {
 		f.Println(err)
