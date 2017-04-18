@@ -21,10 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -152,6 +154,8 @@ public class KCActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {
                 }
             });
+            Switch kc_switcher=(Switch)rootView.findViewById(R.id.kc_frag_switcher);
+            kc_switcher.setChecked(sp_kc.getBoolean("kc_switcher"+String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)-1),false));
             frag_bt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -171,6 +175,15 @@ public class KCActivity extends AppCompatActivity {
                             Log.d("Fragment=========", "onClick: "+e.toString());
                         }
                     }
+                    if (sp_kc.getBoolean("kc_switcher"+String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)-1),false)){
+                        editText.setText("");
+                    }
+                }
+            });
+            kc_switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    sp_kc.edit().putBoolean("kc_switcher"+String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER)-1),isChecked).commit();
                 }
             });
             return rootView;

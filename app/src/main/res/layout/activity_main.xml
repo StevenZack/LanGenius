@@ -26,11 +26,20 @@
             android:layout_marginTop="48dp"
             android:layout_marginLeft="12dp"
             android:layout_height="wrap_content" />
+
+        <Switch
+            android:id="@+id/main_switch1"
+            android:layout_width="wrap_content"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:layout_marginTop="76dp"
+            android:layout_height="wrap_content" />
         <TextView
             android:layout_width="wrap_content"
-            android:text="@string/cbhasbeenshared"
+            android:text="@string/cbsharedisabled"
             android:textColor="#ccc"
-            android:layout_marginLeft="12dp"
+            android:id="@+id/main_txt_clipshare"
+            android:layout_marginLeft="60dp"
             android:textSize="13sp"
             android:layout_marginTop="84dp"
             android:layout_height="wrap_content" />
@@ -94,4 +103,6 @@
         android:id="@+id/main_frcv_path"
         android:layout_marginLeft="20dp"
         android:layout_height="wrap_content" />
+
+
 </FrameLayout>

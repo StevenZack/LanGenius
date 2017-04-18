@@ -25,7 +25,7 @@ var (
 
 func init() {
 	mux = make(map[string]func(http.ResponseWriter, *http.Request))
-	tdata = TData{Clipboard: "Clipboard:", Copy: "copy", Send: "send", Files: "Files", CbContent: "", UploadButton: "upload", KC_enabled: false}
+	tdata = TData{Clipboard: "Clipboard:", Copy: "copy", Send: "send", Files: "Files", CbContent: "", UploadButton: "upload", KC_enabled: false, CbEnabled: false}
 	str_storagePath = "/sdcard/"
 }
 
@@ -41,7 +41,7 @@ type TData struct {
 	Clipboard, Copy, Send, CbContent, Files string
 	FileSlice                               []MyFileEntry
 	UploadButton                            string
-	KC_enabled                              bool
+	KC_enabled, CbEnabled                   bool
 }
 type MyHandler struct{}
 
@@ -213,6 +213,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 </head>
 <body style="background-color: #58c6d5">
 <center>
+{{if .CbEnabled}}
 <div class="wrapper"><table>
 	<tr>
 		<th style="color: #D81B60">{{.Clipboard}}</th>
@@ -232,6 +233,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	<td colspan="2"><hr></td>
 	</tr>
 </table></div>
+{{end}}
 <br><br>
 <div class="wrapper">
 <table>
@@ -282,6 +284,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 func SetHtmlPath(str string) {
 	html_file_path = str
+}
+func SetCBEnabled(bo bool) {
+	tdata.CbEnabled = bo
 }
 func AddFile(str string) error {
 	fns := strings.Split(str, "/")
@@ -424,4 +429,45 @@ func GetUDPConnections() string {
 		a = append(a, v.String())
 	}
 	return strings.Join(a, "#")
+}
+func GetIP() string {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		f.Println(err)
+		return ""
+	}
+	var strs []string
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			f.Println(err)
+			continue
+		}
+		for _, addr := range addrs {
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip := v.IP
+				strs = append(strs, ip.String())
+			case *net.IPAddr:
+				// ip := v.IP
+				// strs = append(strs, ip.String())
+			}
+		}
+	}
+	for _, v := range strs {
+		if strings.HasPrefix(v, "192.168.") {
+			return v
+		}
+	}
+	for _, v := range strs {
+		if strings.HasPrefix(v, "10.") {
+			return v
+		}
+	}
+	for _, v := range strs {
+		if strings.HasPrefix(v, "172.") {
+			return v
+		}
+	}
+	return "127.0.0.1"
 }

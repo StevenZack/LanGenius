@@ -3,7 +3,7 @@
     <string name="app_name">局域网精灵</string>
     <string name="language">zh</string>
     <string name="addFileFailed">失败, 请更换其他文件管理器!</string>
-    <string name="cbhasbeenshared">复制内容已分享到局域网</string>
+    <string name="cbhasbeenshared">复制内容已经分享</string>
     <string name="newClipboard">收到新的复制内容</string>
     <string name="newFile">收到新的文件:</string>
     <string name="shareFiles">"分享的文件 : "</string>
@@ -21,4 +21,6 @@
     <string name="str_new_device_detected">发现新的受控端设备</string>
     <string name="custom_html_file">托管html文件</string>
     <string name="str_setted_succeed">设置成功</string>
+    <string name="cbsharedisabled">复制内容分享已经禁止</string>
+    <string name="str_clear_after_sent">发送后清空</string>
 </resources>

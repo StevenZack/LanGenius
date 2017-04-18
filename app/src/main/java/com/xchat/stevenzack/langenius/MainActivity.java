@@ -22,6 +22,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,9 +32,11 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
             LanGenius.setClipboard(clipboardManager.getPrimaryClip().getItemAt(0).getText().toString());
         }
         txt_ip=(TextView)findViewById(R.id.txt_hostname);
-        String str_IP=getHostIP();
+        String str_IP=LanGenius.getIP();
         final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
         final String default_port=sp_settings.getString(MainActivity.this.getString(R.string.sp_sub_port),MainActivity.this.getString(R.string.default_port));
-        txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP==null?"localhost":str_IP)+default_port);
+        txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP=="127.0.0.1"?"localhost":str_IP)+default_port);
         ((ImageButton)findViewById(R.id.main_optionMenu)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
         ((ImageButton)findViewById(R.id.bt_openbrowser)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tempstr=getHostIP();
-                if (tempstr==null)
+                String tempstr=LanGenius.getIP();
+                if (tempstr=="127.0.0.1")
                     tempstr="localhost";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"+tempstr+default_port));
                 startActivity(browserIntent);
@@ -244,6 +247,28 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
         String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath));
         ((TextView)findViewById(R.id.main_frcv_path)).setText(this.getString(R.string.storagepath)+str);
+        Switch switchCompat=(Switch)findViewById(R.id.main_switch1);
+        boolean bo=sp_settings.getBoolean(MainActivity.this.getString(R.string.sp_sub_clipshare),false);
+        switchCompat.setChecked(bo);
+        if (bo){
+            ((TextView)findViewById(R.id.main_txt_clipshare)).setText(MainActivity.this.getString(R.string.cbhasbeenshared));
+        }else{
+            ((TextView)findViewById(R.id.main_txt_clipshare)).setText(MainActivity.this.getString(R.string.cbsharedisabled));
+        }
+        LanGenius.setCBEnabled(bo);
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    ((TextView)findViewById(R.id.main_txt_clipshare)).setText(MainActivity.this.getString(R.string.cbhasbeenshared));
+                }else{
+                    ((TextView)findViewById(R.id.main_txt_clipshare)).setText(MainActivity.this.getString(R.string.cbsharedisabled));
+                }
+                LanGenius.setCBEnabled(isChecked);
+                sp_settings.edit().putBoolean(MainActivity.this.getString(R.string.sp_sub_clipshare),isChecked).commit();
+            }
+        });
+
     }
 
     private void showFileChooser() {
@@ -312,52 +337,6 @@ public class MainActivity extends AppCompatActivity {
                 msg.obj=s;
                 handler.sendMessage(msg);
             }
-        }
-    }
-    public static String getHostIP() {
-
-        String hostIp = null;
-        try {
-            Enumeration nis = NetworkInterface.getNetworkInterfaces();
-            InetAddress ia = null;
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = (NetworkInterface) nis.nextElement();
-                Enumeration<InetAddress> ias = ni.getInetAddresses();
-                while (ias.hasMoreElements()) {
-                    ia = ias.nextElement();
-                    if (ia instanceof Inet6Address) {
-                        continue;// skip ipv6
-                    }
-                    String ip = ia.getHostAddress();
-                    if (!"127.0.0.1".equals(ip)) {
-                        hostIp = ia.getHostAddress();
-                        break;
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            Log.i("yao", "SocketException");
-            e.printStackTrace();
-        }
-        return hostIp;
-
-    }
-    private String fileExt(String url) {
-        if (url.indexOf("?") > -1) {
-            url = url.substring(0, url.indexOf("?"));
-        }
-        if (url.lastIndexOf(".") == -1) {
-            return null;
-        } else {
-            String ext = url.substring(url.lastIndexOf(".") + 1);
-            if (ext.indexOf("%") > -1) {
-                ext = ext.substring(0, ext.indexOf("%"));
-            }
-            if (ext.indexOf("/") > -1) {
-                ext = ext.substring(0, ext.indexOf("/"));
-            }
-            return ext.toLowerCase();
-
         }
     }
 }

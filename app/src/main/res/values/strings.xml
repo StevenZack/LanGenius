@@ -25,4 +25,7 @@
     <string name="str_new_device_detected">New remote device detected</string>
     <string name="custom_html_file">Html file service</string>
     <string name="str_setted_succeed">Setted succeed !</string>
+    <string name="sp_sub_clipshare" translatable="false">shareclipboard</string>
+    <string name="cbsharedisabled">Clipboard sharing disabled</string>
+    <string name="str_clear_after_sent">Clear after sent</string>
 </resources>
