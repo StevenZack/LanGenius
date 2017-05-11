@@ -96,7 +96,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		t.Parse(`<!DOCTYPE html>
 <html>
 <head>
-	<title>shareMe</title>
+	<title>LanGenius</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width maximum-scale=1 initial-scale=1">
 	<script type="text/javascript">
@@ -114,35 +114,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 			document.getElementById('submit_button').disabled=false
 		}
 		function DoUpload(){
-			if (document.getElementById("myUploadFile").value != "") {
-				document.getElementById("submit_button").disabled=true;
-	            var fileObj = document.getElementById("myUploadFile").files[0];
-	            //创建xhr
-	            var xhr = new XMLHttpRequest();
-	            var url = "uploadFile";
-	            //FormData对象
-	            var fd = new FormData();
-	            fd.append("myUploadFile", fileObj); 
-	            fd.append("acttime",new Date().toString());    //本人喜欢在参数中添加时间戳，防止缓存（--、）
-	            xhr.onreadystatechange = function () {
-	                if (xhr.readyState == 4 && xhr.status == 200) {
-	                    var result = xhr.responseText;
-	                    document.getElementById("result").innerHTML = result;
-	                    setTimeout("window.location.href='/'", 1000)
-	                }
-	            }
-	            //进度条部分
-	            xhr.upload.onprogress = function (evt) {
-	                if (evt.lengthComputable) {
-	                    var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-	                    document.getElementById('uploadProgress').value = percentComplete;
-	                }
-	            };
-	            xhr.open("POST", url, true);
-	            xhr.send(fd);
-	        }else{
-				document.getElementById("submit_button").disabled=false;
-	        }
+			document.getElementById("result").innerHTML = "uploading ...";
 		}
 		function downloadKC(){
 			var myos=detectOS()
@@ -252,8 +224,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 	<td colspan="2"><hr></td>
 	</tr>
 	<tr>
-		<td><input type="file" name="myUploadFile" id="myUploadFile" onchange="onFileSelected()"></td>
-		<td><input type="button" id="submit_button" disabled value="{{.UploadButton}}" onclick="DoUpload()"></td>
+	<form enctype="multipart/form-data" action="/uploadFile" method="post">
+		<td><input type="file" name="myUploadFile" id="myUploadFile" onchange="onFileSelected()" multiple="multiple"></td>
+		<td><input type="submit" id="submit_button" disabled value="{{.UploadButton}}" onclick="DoUpload()"></td>
 	</tr>
 	<tr><td colspan="2">
 	    <progress value="0" max="100" id="uploadProgress" style="height: 4px; width: 100%"></progress>
@@ -323,23 +296,40 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 }
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 30)
-	file, handler, err := r.FormFile("myUploadFile")
-	if err != nil {
-		f.Println(err)
-		f.Fprintf(w, err.Error())
-		return
+	fhs := r.MultipartForm.File["myUploadFile"]
+	for _, v := range fhs {
+		file, err := v.Open()
+		if err != nil {
+			f.Println(err)
+			f.Fprintf(w, err.Error())
+			return
+		}
+		javahandler.OnFileReceived(v.Filename)
+		mf, err := os.OpenFile(str_storagePath+v.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			f.Println(err)
+			f.Fprintf(w, err.Error())
+			return
+		}
+		defer mf.Close()
+		io.Copy(mf, file)
 	}
-	javahandler.OnFileReceived(handler.Filename)
-	defer file.Close()
-	myfile, err := os.OpenFile(str_storagePath+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-	if err != nil {
-		f.Println(err)
-		f.Fprintf(w, err.Error())
-		return
-	}
-	defer myfile.Close()
-	io.Copy(myfile, file)
-	f.Fprintf(w, `OK`)
+	t := template.New("name")
+	t.Parse(`<!DOCTYPE html>
+<html>
+<head>
+	<title>LanGenius</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width maximum-scale=1 initial-scale=1">
+</head>
+<body>
+<center><b>OK</b></center>
+<script type="text/javascript">
+	setTimeout("location.href='/'", 1000)
+</script>
+</body>
+</html>`)
+	t.Execute(w, nil)
 }
 func downloadKC(w http.ResponseWriter, r *http.Request) {
 	var myos = r.FormValue("os")
