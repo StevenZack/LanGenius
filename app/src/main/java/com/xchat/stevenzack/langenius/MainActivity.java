@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.newFile)+msg.obj.toString(),Toast.LENGTH_SHORT).show();
                     Message newmsg=new Message();
                     newmsg.arg1=2;
-                    newmsg.obj="/sdcard/"+msg.obj.toString();
+                    newmsg.obj="/storage/emulated/0/"+msg.obj.toString();
                     Log.d(TAG, "handleMessage: newmsg.obj="+newmsg.obj.toString());
                     handler.sendMessage(newmsg);
                     break;
