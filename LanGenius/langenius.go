@@ -85,6 +85,7 @@ func Start(language string, jh JavaHandler, port string) {
 	}()
 }
 func Stop() {
+	tdata.FileSlice = nil
 	err := server.Shutdown(context.Background())
 	if err != nil {
 		f.Println(err)
