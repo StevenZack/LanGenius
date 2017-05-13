@@ -23,4 +23,5 @@
     <string name="str_setted_succeed">设置成功</string>
     <string name="cbsharedisabled">复制内容分享已经禁止</string>
     <string name="str_clear_after_sent">发送后清空</string>
+    <string name="file_chooser">选择文件</string>
 </resources>

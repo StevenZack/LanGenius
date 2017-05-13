@@ -64,7 +64,7 @@ import static android.provider.Settings.AUTHORITY;
 public class MainActivity extends AppCompatActivity {
     private ClipboardManager clipboardManager;
     private String TAG="Main";
-    private Handler handler=new Handler(){
+    public Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.arg1){
@@ -184,7 +184,9 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+//                showFileChooser();
+                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
+                startActivity(intent);
             }
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -271,33 +273,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case 2233:
-                if (resultCode==RESULT_OK){
-                    Uri uri=data.getData();
-                    Log.d("spy","##FileSharer: uri="+uri.toString());
-                    String path=FileUtils.getPath(MainActivity.this,uri);
-                    Message msg=new Message();
-                    msg.arg1=2;
-                    msg.obj=path;
-                    handler.sendMessage(msg);
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    private void showFileChooser() {
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType("*/*");
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        try {
+//            startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
+//        } catch (android.content.ActivityNotFoundException ex) {
+//            Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode){
+//            case 2233:
+//                if (resultCode==RESULT_OK){
+//                    Uri uri=data.getData();
+//                    Log.d("spy","##FileSharer: uri="+uri.toString());
+//                    String path=FileUtils.getPath(MainActivity.this,uri);
+//                    Message msg=new Message();
+//                    msg.arg1=2;
+//                    msg.obj=path;
+//                    handler.sendMessage(msg);
+//                }
+//                break;
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
