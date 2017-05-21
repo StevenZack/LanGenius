@@ -64,7 +64,7 @@ import static android.provider.Settings.AUTHORITY;
 public class MainActivity extends AppCompatActivity {
     private ClipboardManager clipboardManager;
     private String TAG="Main";
-    public Handler handler=new Handler(){
+    public  Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.arg1){
@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                showFileChooser();
                 Intent intent=new Intent(MainActivity.this,Main2Activity.class);
+                HandlerConverter.handler=handler;
                 startActivity(intent);
             }
         });
@@ -341,4 +342,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }

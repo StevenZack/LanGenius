@@ -5,5 +5,6 @@
     <color name="colorAccent">#FF5722</color>
     <color name="lightgreen">#58c6d5</color>
     <color name="lightyellow">#fcd837</color>
+    <color name="gray">#aaa</color>
     <color name="lightpurple">#783393</color>
 </resources>

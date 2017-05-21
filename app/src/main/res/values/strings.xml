@@ -29,4 +29,5 @@
     <string name="cbsharedisabled">Clipboard sharing disabled</string>
     <string name="str_clear_after_sent">Clear after sent</string>
     <string name="file_chooser">File chooser</string>
+    <string name="all">All</string>
 </resources>
