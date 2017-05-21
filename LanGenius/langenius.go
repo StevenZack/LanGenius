@@ -115,7 +115,32 @@ func home(w http.ResponseWriter, r *http.Request) {
 			document.getElementById('submit_button').disabled=false
 		}
 		function DoUpload(){
-			document.getElementById("result").innerHTML = "uploading ...";
+			var fd=new FormData()
+			var file=document.getElementById("myUploadFile")
+			for(var i=0;i<file.files.length;i++){
+				fd.append("myUploadFile",file.files[i])
+			}
+			var xhr=new XMLHttpRequest()
+			xhr.upload.addEventListener("progress", function(evt){
+				if (evt.lengthComputable) {
+					var percentComplete = Math.round(evt.loaded * 100 / evt.total);  
+					document.getElementById("uploadProgress").value=percentComplete
+          			document.getElementById('result').innerHTML = percentComplete.toString() + '%';  
+				}else{
+					 document.getElementById('result').innerHTML = 'unable to compute';  
+				}
+			}, false)
+			xhr.addEventListener("load", function(evt){
+				document.write(evt.target.responseText)
+			}, false)
+			xhr.addEventListener("error", function(evt){
+				document.getElementById("result").innerHTML="Something went wrong ."
+			}, false)
+			xhr.addEventListener("abort", function(evt){
+				document.getElementById("result").innerHTML="Abort ."
+			}, false)
+			xhr.open("POST", "/uploadFile")
+			xhr.send(fd)
 		}
 		function downloadKC(){
 			var myos=detectOS()
@@ -227,7 +252,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	<tr>
 	<form enctype="multipart/form-data" action="/uploadFile" method="post">
 		<td><input type="file" name="myUploadFile" id="myUploadFile" onchange="onFileSelected()" multiple="multiple"></td>
-		<td><input type="submit" id="submit_button" disabled value="{{.UploadButton}}" onclick="DoUpload()"></td>
+		<td><input type="button" id="submit_button" disabled value="{{.UploadButton}}" onclick="DoUpload()"></td>
 	</tr>
 	<tr><td colspan="2">
 	    <progress value="0" max="100" id="uploadProgress" style="height: 4px; width: 100%"></progress>
