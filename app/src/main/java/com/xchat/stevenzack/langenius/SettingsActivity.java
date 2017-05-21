@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         final SharedPreferences sp_settings=getSharedPreferences(SettingsActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
         bt_filercvpath=(Button)findViewById(R.id.set_bt_frcvpath);
-        bt_filercvpath.setText(this.getString(R.string.storagepath)+sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath)));
+        bt_filercvpath.setText(this.getString(R.string.storagepath)+sp_settings.getString(this.getString(R.string.sp_sub_frcv_path), Environment.getExternalStorageDirectory().toString()+"/"));
         bt_filercvpath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setTitle(SettingsActivity.this.getString(R.string.str_setDefaultFileRecvPath));
                 final EditText input = new EditText(SettingsActivity.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setText(sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_frcv_path),SettingsActivity.this.getString(R.string.default_filercvpath)));
+                input.setText(sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_frcv_path),Environment.getExternalStorageDirectory().toString()+"/"));
                 builder.setView(input);
                 builder.setPositiveButton(SettingsActivity.this.getString(R.string.str_ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -46,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
                             m_Text=m_Text+"/";
                         }
                         sp_settings.edit().putString(SettingsActivity.this.getString(R.string.sp_sub_frcv_path),m_Text).commit();
-                        bt_filercvpath.setText(SettingsActivity.this.getString(R.string.storagepath)+sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_frcv_path),SettingsActivity.this.getString(R.string.default_filercvpath)));
+                        bt_filercvpath.setText(SettingsActivity.this.getString(R.string.storagepath)+sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_frcv_path),Environment.getExternalStorageDirectory().toString()+"/"));
                         LanGenius.setStoragePath(m_Text);
                     }
                 });

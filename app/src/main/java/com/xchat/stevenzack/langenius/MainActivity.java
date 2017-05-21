@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
@@ -76,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,MainActivity.this.getString(R.string.newFile)+msg.obj.toString(),Toast.LENGTH_SHORT).show();
                     Message newmsg=new Message();
                     newmsg.arg1=2;
-                    newmsg.obj="/storage/emulated/0/"+msg.obj.toString();
+                    String str=sp_settings.getString(MainActivity.this.getString(R.string.sp_sub_frcv_path),Environment.getExternalStorageDirectory().toString()+"/");
+                    newmsg.obj=str+msg.obj.toString();
                     Log.d(TAG, "handleMessage: newmsg.obj="+newmsg.obj.toString());
                     handler.sendMessage(newmsg);
                     break;
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private List<HashMap<String,String>> strings=new ArrayList<>();
     private SimpleAdapter simpleAdapter;
     private FloatingActionButton floatingActionButton;
+    private SharedPreferences sp_settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
         txt_ip=(TextView)findViewById(R.id.txt_hostname);
         String str_IP=LanGenius.getIP();
-        final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
+        sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
         final String default_port=sp_settings.getString(MainActivity.this.getString(R.string.sp_sub_port),MainActivity.this.getString(R.string.default_port));
         txt_ip.setText(MainActivity.this.getString(R.string.websiteAddress)+(str_IP=="127.0.0.1"?"localhost":str_IP)+default_port);
         ((ImageButton)findViewById(R.id.main_optionMenu)).setOnClickListener(new View.OnClickListener() {
@@ -193,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         }
-        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath));
+        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path), Environment.getExternalStorageDirectory().toString()+"/");
         ((TextView)findViewById(R.id.main_frcv_path)).setText(this.getString(R.string.storagepath)+str);
         new Thread(new Runnable() {
             @Override
@@ -248,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         final SharedPreferences sp_settings=getSharedPreferences(MainActivity.this.getString(R.string.sp_settings),MODE_PRIVATE);
-        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),this.getString(R.string.default_filercvpath));
+        String str=sp_settings.getString(this.getString(R.string.sp_sub_frcv_path),Environment.getExternalStorageDirectory().toString()+"/");
         ((TextView)findViewById(R.id.main_frcv_path)).setText(this.getString(R.string.storagepath)+str);
         Switch switchCompat=(Switch)findViewById(R.id.main_switch1);
         boolean bo=sp_settings.getBoolean(MainActivity.this.getString(R.string.sp_sub_clipshare),false);

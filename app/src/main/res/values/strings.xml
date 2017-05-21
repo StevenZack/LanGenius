@@ -15,7 +15,6 @@
     <string name="settings">Settings</string>
     <string name="sp_sub_port" translatable="false">port</string>
     <string name="default_port" translatable="false">:2333</string>
-    <string name="default_filercvpath" translatable="false">/storage/emulated/0/</string>
     <string name="str_default_port">"Default Port "</string>
     <string name="str_setDefaultPort">Set default port</string>
     <string name="str_setDefaultFileRecvPath">Set file receive path</string>
