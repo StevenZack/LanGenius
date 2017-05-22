@@ -1,21 +1,16 @@
 package com.xchat.stevenzack.langenius;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,16 +18,10 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -46,20 +35,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
 import LanGenius.JavaHandler;
 import LanGenius.LanGenius;
-
-import static android.provider.Settings.AUTHORITY;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -188,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                showFileChooser();
-                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
-                HandlerConverter.handler=handler;
+                Intent intent=new Intent(MainActivity.this,FileChooserMultiFiles.class);
+                HandlerConverter.MainActivity_handler=handler;
                 startActivity(intent);
             }
         });
@@ -276,35 +257,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-//    private void showFileChooser() {
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("*/*");
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        try {
-//            startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
-//        } catch (android.content.ActivityNotFoundException ex) {
-//            Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode){
-//            case 2233:
-//                if (resultCode==RESULT_OK){
-//                    Uri uri=data.getData();
-//                    Log.d("spy","##FileSharer: uri="+uri.toString());
-//                    String path=FileUtils.getPath(MainActivity.this,uri);
-//                    Message msg=new Message();
-//                    msg.arg1=2;
-//                    msg.obj=path;
-//                    handler.sendMessage(msg);
-//                }
-//                break;
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
-
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

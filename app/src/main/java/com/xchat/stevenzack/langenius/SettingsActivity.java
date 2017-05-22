@@ -1,11 +1,13 @@
 package com.xchat.stevenzack.langenius;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -14,15 +16,26 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.io.File;
 
 import LanGenius.LanGenius;
 
 public class SettingsActivity extends AppCompatActivity {
     private Button bt_filercvpath,bt_default_port,bt_html;
-
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1){
+                case 0:
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +88,18 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setPositiveButton(SettingsActivity.this.getString(R.string.str_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String m_Text = ":"+input.getText().toString();
-                        sp_settings.edit().putString(SettingsActivity.this.getString(R.string.sp_sub_port),m_Text).commit();
-                        bt_default_port.setText(SettingsActivity.this.getString(R.string.str_default_port)+sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_port),SettingsActivity.this.getString(R.string.default_port)));
+                        if (input.getText()==null){
+                            Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_must_between), Toast.LENGTH_SHORT).show();
+                        }else {
+                            final String tmpstr = input.getText().toString();
+                            if (tmpstr == null || tmpstr.equals("") || Integer.valueOf(tmpstr) < 1000 || Integer.valueOf(tmpstr) > 65535) {
+                                Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_must_between), Toast.LENGTH_SHORT).show();
+                            } else {
+                                String m_Text = ":" + input.getText().toString();
+                                sp_settings.edit().putString(SettingsActivity.this.getString(R.string.sp_sub_port), m_Text).commit();
+                                bt_default_port.setText(SettingsActivity.this.getString(R.string.str_default_port) + sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_port), SettingsActivity.this.getString(R.string.default_port)));
+                            }
+                        }
                     }
                 });
                 builder.setNegativeButton(SettingsActivity.this.getString(R.string.str_cancel), new DialogInterface.OnClickListener() {
@@ -94,37 +116,80 @@ public class SettingsActivity extends AppCompatActivity {
         bt_html.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                builder.setTitle(SettingsActivity.this.getString(R.string.str_set_port));
+                final EditText input = new EditText(SettingsActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setHint("1000~65535");
+                input.setText(sp_settings.getString("StaticSitePort",""));
+
+                builder.setView(input);
+                builder.setPositiveButton(SettingsActivity.this.getString(R.string.str_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (input.getText()==null){
+                            Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_must_between), Toast.LENGTH_SHORT).show();
+                        }else {
+                            final String tmpstr = input.getText().toString();
+                            if (tmpstr == null || tmpstr.equals("")|| Integer.valueOf(tmpstr) < 1000 || Integer.valueOf(tmpstr) > 65535 ) {
+                                Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_must_between), Toast.LENGTH_SHORT).show();
+                            } else if ((":" + tmpstr).equals(sp_settings.getString(SettingsActivity.this.getString(R.string.sp_sub_port), ""))) {
+                                Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_cannot_use_LanGenius_port), Toast.LENGTH_LONG).show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                                builder.setTitle(SettingsActivity.this.getString(R.string.str_select_dir));
+                                final EditText input = new EditText(SettingsActivity.this);
+                                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                                input.setText(sp_settings.getString("staticSiteDir", Environment.getExternalStorageDirectory() + "/"));
+                                builder.setView(input);
+                                builder.setPositiveButton(SettingsActivity.this.getString(R.string.str_ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (input.getText()==null){
+                                            Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_path_incorrect), Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            String tmpPath = input.getText().toString();
+                                            if (tmpPath == null || !tmpPath.startsWith("/") || !(new File(tmpPath).isDirectory())) {
+                                                Toast.makeText(SettingsActivity.this, SettingsActivity.this.getString(R.string.str_path_incorrect), Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                LanGenius.startStaticSite(":" + tmpstr, tmpPath);
+                                                Log.d("TAG", "onClick: tmpPath"+tmpPath);
+                                                sp_settings.edit().putString("StaticSitePort", tmpstr).putString("staticSiteDir", tmpPath).commit();
+                                                bt_html.setText(SettingsActivity.this.getString(R.string.str_running_on) + LanGenius.getIP() + ":" + tmpstr);
+                                                bt_html.setEnabled(false);
+                                            }
+                                        }
+                                    }
+                                });
+                                builder.setNegativeButton(SettingsActivity.this.getString(R.string.str_cancel), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                builder.show();
+                            }
+                        }
+                    }
+                });
+                builder.setNegativeButton(SettingsActivity.this.getString(R.string.str_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
+        if (LanGenius.isStaticSiteRunning()){
+            bt_html.setText(SettingsActivity.this.getString(R.string.str_running_on)+LanGenius.getIP()+":"+sp_settings.getString("StaticSitePort","NULL"));
+            bt_html.setEnabled(false);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         }
     }
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            startActivityForResult( Intent.createChooser(intent, "Select a File to Upload"), 2233);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case 2233:
-                if (resultCode==RESULT_OK){
-                    Uri uri=data.getData();
-                    Log.d("spy","##FileSharer: uri="+uri.toString());
-                    String path=FileUtils.getPath(SettingsActivity.this,uri);
-                    LanGenius.setHtmlPath(path);
-                    Toast.makeText(SettingsActivity.this,SettingsActivity.this.getString(R.string.str_setted_succeed),Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

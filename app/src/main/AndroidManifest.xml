@@ -42,11 +42,10 @@
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme_withActionBar" />
         <activity
-            android:name=".Main2Activity"
-            android:theme="@style/AppTheme_withActionBar"
-            android:launchMode="singleInstance"
+            android:name=".FileChooserMultiFiles"
             android:label="@string/file_chooser"
-            ></activity>
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme_withActionBar" />
     </application>
 
 </manifest>

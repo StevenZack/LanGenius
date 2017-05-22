@@ -7,5 +7,5 @@ import android.os.Handler;
  */
 
 public class HandlerConverter {
-    public static Handler handler;
+    public static Handler MainActivity_handler,Settings_Handler;
 }

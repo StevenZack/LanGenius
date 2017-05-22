@@ -25,4 +25,10 @@
     <string name="str_clear_after_sent">发送后清空</string>
     <string name="file_chooser">选择文件</string>
     <string name="all">全选</string>
+    <string name="str_select_dir">选择托管文件夹</string>
+    <string name="str_set_port">设置临时端口号</string>
+    <string name="str_cannot_use_LanGenius_port">端口号不能和默认端口号冲突</string>
+    <string name="str_path_incorrect">路径不对</string>
+    <string name="str_running_on">"运行中 ... "</string>
+    <string name="str_must_between">必须要在1000 ~ 65535之间</string>
 </resources>

@@ -15,12 +15,12 @@ import (
 )
 
 var (
-	mux             map[string]func(http.ResponseWriter, *http.Request)
-	server          http.Server
-	javahandler     JavaHandler
-	tdata           TData
-	html_file_path  string
-	str_storagePath string
+	mux                      map[string]func(http.ResponseWriter, *http.Request)
+	server                   http.Server
+	javahandler              JavaHandler
+	tdata                    TData
+	str_storagePath          string
+	flag_staticSiteIsRunning bool = false
 )
 
 func init() {
@@ -84,6 +84,7 @@ func Start(language string, jh JavaHandler, port string) {
 		}
 	}()
 }
+
 func Stop() {
 	tdata.FileSlice = nil
 	err := server.Shutdown(context.Background())
@@ -91,10 +92,23 @@ func Stop() {
 		f.Println(err)
 	}
 }
+func StartStaticSite(port, dir string) {
+	go func() {
+		fs := http.FileServer(http.Dir(dir))
+		http.Handle("/", fs)
+		err := http.ListenAndServe(port, nil)
+		if err != nil {
+			f.Println(err)
+		}
+	}()
+	flag_staticSiteIsRunning = true
+}
+func IsStaticSiteRunning() bool {
+	return flag_staticSiteIsRunning
+}
 func home(w http.ResponseWriter, r *http.Request) {
-	if html_file_path == "" {
-		t := template.New("homeTPL")
-		t.Parse(`<!DOCTYPE html>
+	t := template.New("homeTPL")
+	t.Parse(`<!DOCTYPE html>
 <html>
 <head>
 	<title>LanGenius</title>
@@ -271,18 +285,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 </body>
 </html>
 <script type="text/javascript">detectLang()</script>`)
-		t.Execute(w, tdata)
-	} else {
-		t, err := template.ParseFiles(html_file_path)
-		if err != nil {
-			f.Fprint(w, err.Error())
-		} else {
-			t.Execute(w, nil)
-		}
-	}
-}
-func SetHtmlPath(str string) {
-	html_file_path = str
+	t.Execute(w, tdata)
+
 }
 func SetCBEnabled(bo bool) {
 	tdata.CbEnabled = bo

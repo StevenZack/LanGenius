@@ -1,15 +1,11 @@
 package com.xchat.stevenzack.langenius;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,19 +14,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-public class Main2Activity extends AppCompatActivity {
+public class FileChooserMultiFiles extends AppCompatActivity {
     private Button button;
     private ListView listView;
     private List<String> filenames=new ArrayList<>();
@@ -45,9 +35,6 @@ public class Main2Activity extends AppCompatActivity {
                     selectAllStatus=false;
 
                     File[] listOfFiles=new File(currentPath).listFiles();
-//                    for (int i=0;i<listView.getCheckedItemCount();i++){
-//                        listView.setItemChecked(i,false);
-//                    }
                     filenames.clear();
                     if (listOfFiles!=null){
                         for (int i=0;i<listOfFiles.length;i++){
@@ -60,7 +47,7 @@ public class Main2Activity extends AppCompatActivity {
                             }
                         }
                     }
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(Main2Activity.this, android.R.layout.simple_list_item_multiple_choice, filenames);
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(FileChooserMultiFiles.this, android.R.layout.simple_list_item_multiple_choice, filenames);
                     listView.setAdapter(arrayAdapter);
                     listView.setSelection((int)msg.obj);
                     break;
@@ -74,13 +61,12 @@ public class Main2Activity extends AppCompatActivity {
                     break;
             }
         }
-    },mainHandler;
-    private String TAG="===MainActivity=====";
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_fc_multifiles);
         button=(Button)findViewById(R.id.filechooser_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,14 +74,14 @@ public class Main2Activity extends AppCompatActivity {
                 SparseBooleanArray bs = listView.getCheckedItemPositions();
                 for (int i=0;i<listView.getAdapter().getCount();i++){
                     if (bs.get(i)){
-                        if (HandlerConverter.handler!=null){
+                        if (HandlerConverter.MainActivity_handler!=null){
                             Message msg=new Message();msg.arg1=2;msg.obj=currentPath+filenames.get(i);
-                            HandlerConverter.handler.sendMessage(msg);
+                            HandlerConverter.MainActivity_handler.sendMessage(msg);
                         }
                     }
                 }
 
-                SharedPreferences sp=getSharedPreferences(Main2Activity.this.getString(R.string.sp_settings),MODE_PRIVATE);
+                SharedPreferences sp=getSharedPreferences(FileChooserMultiFiles.this.getString(R.string.sp_settings),MODE_PRIVATE);
                 sp.edit().putString("fileChooserDir",currentPath).commit();
                 finish();
             }

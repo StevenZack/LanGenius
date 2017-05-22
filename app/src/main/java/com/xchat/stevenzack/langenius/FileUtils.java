@@ -10,7 +10,6 @@ import android.net.Uri;
 
 public class FileUtils {
     public static String getPath(Context context, Uri uri) {
-
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = { "_data" };
             Cursor cursor = null;
