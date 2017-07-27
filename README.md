@@ -2,7 +2,7 @@
 LanGenius is a android app that help you share things on local area network(LAN)
 
 # Download
-<a src="https://www.coolapk.com/apk/com.xchat.stevenzack.langenius">CoolApk酷安应用市场</a>
+<a href="https://www.coolapk.com/apk/com.xchat.stevenzack.langenius">CoolApk酷安应用市场</a>
 
 # Features:
 > Share your clipboard on LAN<br>
