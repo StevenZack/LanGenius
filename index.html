@@ -1,9 +1,144 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>LanGenius - Transfer file easily</title>
+	<title>LanGenius</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width maximum-scale=1 initial-scale=1">
+	<script type="text/javascript">
+		function copy(me) {
+			var cb=document.getElementById("cb")
+			cb.select()
+			document.execCommand("Copy")
+			var myvalue=me.value
+			me.value="√"
+			setTimeout("document.getElementById('btCopy').value='"+myvalue+"'",1000)
+		}
+		function send(me) {
+			var myvalue=me.value
+			var str=document.getElementById("cb").value
+			var xhr=new XMLHttpRequest()
+			var fd=new FormData()
+			var obj=new Object()
+			obj.Cb=str
+			fd.append('cb',JSON.stringify(obj))
+			xhr.onload=function(e) {
+				if (this.status==200||this.status==302||this.status==304) {
+					me.value="√"
+					setTimeout("document.getElementById('btSend').value='"+myvalue+"'",1000)
+				}
+			}
+			xhr.open("POST", "/send", true)
+			xhr.send(fd)
+		}
+		function getUploadServerHost() {
+			var strs=location.href.split(":")
+			var port=new Number(strs[2].split("/")[0])
+			return strs[0]+":"+strs[1]+":"+(port+1).toString()
+		}
+		function downloadKC(){
+			var myos=detectOS()
+			if (navigator.language=="zh-CN") {
+				if (myos=="Windows") {
+					window.location.href="downloadKC?os="+myos
+				}else if (myos=="Linux") {
+					window.location.href="downloadKC?os="+myos
+				}else {
+					window.location.href="downloadKC?os="+myos
+				}
+			}else {
+				if (myos=="Windows") {
+					window.location.href="downloadKC?os="+myos
+				}else if (myos=="Linux") {
+					window.location.href="downloadKC?os="+myos
+				}else {
+					window.location.href="downloadKC?os="+myos
+				}
+			}
+		}
+        function detectOS() {
+            var sUserAgent = navigator.userAgent;
+            var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");
+            if (isWin) return "Windows"
+            var isMac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh") || (navigator.platform == "MacIntel");
+            if (isMac) return "Mac";
+            var isLinux = (String(navigator.platform).indexOf("Linux") > -1)&&(String(navigator.platform).indexOf("Android") <1);
+            if (isLinux) return "Linux";
+            return "other";
+        }
+        function detectLang(){
+            if (navigator.language=="zh-CN") {
+            	document.getElementById("kcenabled").innerHTML="请先下载受控端程序，才能实现遥控"
+            	document.getElementById("uploadPageBt").value="上传文件到手机"
+            	document.getElementById("liveStreamPage").value="局域网直播"
+            }
+        }
+        setTimeout("detectLang()", 200)
+	</script>
+	<style type="text/css">
+		.wrapper{
+			background-color: #fff;
+			display: inline-block;
+			padding: 5px;
+			box-shadow: 2px 2px 10px #000;
+			border-radius: 10px;
+		}
+	</style>
 </head>
-<body>
-LanGenius - Transfer file easily
+<body style="background-color: #58c6d5;font-family: sans-serif;">
+<center>
+{{if .CbEnabled}}
+<div class="wrapper"><table>
+	<tr>
+		<th style="color: #D81B60">{{.Clipboard}}</th>
+	</tr>
+	<tr>
+		<td>
+			<textarea name="cb" id="cb" cols="30" rows="5">{{.CbContent}}</textarea>
+		</td>
+		<td>
+			<input type="button" value="{{.Copy}}" id="btCopy" onclick="copy(this)"><br>
+			<br>	
+			<input type="button" value="{{.Send}}" id="btSend" onclick="send(this)">
+		</td>
+		<td><span id="spanInfo"></span><br><span></span></td>
+	</tr>
+	<tr>
+	<td colspan="2"><hr></td>
+	</tr>
+</table></div>
+{{end}}
+<br><br>
+<div class="wrapper">
+<table>
+	<tr>
+		<th style="color: #1E88E5">{{.Files}}</th>
+	</tr>
+	<tr>
+		<td colspan="2">
+		{{range .FileSlice}}
+			<a href="/downloadFile?filename={{.FileName}}">
+			{{.FileName}}</a><br>
+		{{end}}
+		</td>
+	</tr>
+	<tr>
+	<td colspan="2"><hr></td>
+	</tr>
+	<tr><td>
+			<input type="button" int8 onclick="location.href=getUploadServerHost()" id="uploadPageBt" value="Upload"></input>
+	</td></tr>	
+	<tr><td>
+			<input type="button" int8 onclick="location.href='/showtime'" id="liveStreamPage" value="Live"></input>
+	</td></tr>
+</table>
+</div><br>
+
+{{if .KC_enabled}}
+<br><br>
+	<b><u id="kcenabled" style="color: blue;cursor: pointer;" onclick="downloadKC()">Download Controlled End Program , to enable remote control</u></b>
+<br>
+{{end}}
+
+</center>
 </body>
 </html>
