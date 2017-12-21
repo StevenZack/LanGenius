@@ -15,6 +15,7 @@ func Start(eh EventHandler, port, tmpDir, sPath string) {
 	}
 	http.HandleFunc("/", home)
 	http.HandleFunc("/send", send)
+	http.Handle("/wsClipboard", websocket.Handler(wsClipboard))
 	http.HandleFunc("/download/", download)
 	http.HandleFunc("/viewfile/", viewfile)
 	http.HandleFunc("/upload", upload)

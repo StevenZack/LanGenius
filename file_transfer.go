@@ -3,6 +3,7 @@ package LanGenius
 import (
 	"encoding/json"
 	"fmt"
+	"golang.org/x/net/websocket"
 	"html/template"
 	"io"
 	"net/http"
@@ -116,11 +117,53 @@ func RemoveFile(index int) {
 func SetStoragePath(str string) {
 	storagePath = str
 }
+
+//clipboard part
+type ClipMsg struct {
+	State, Content string
+}
+
+var (
+	clipConns []*websocket.Conn
+)
+
 func SetClipboardEnabled(b bool) {
 	homeData.ClipboardEnabled = b
 }
+
 func SetClipboard(str string) {
 	homeData.Clipboard = str
+	if len(clipConns) > 0 {
+		for _, v := range clipConns {
+			websocket.Message.Send(v, ClipMsg{Content: str, State: "OK"})
+		}
+	}
+}
+
+func wsClipboard(ws *websocket.Conn) {
+	defer ws.Close()
+	clipConns = append(clipConns, ws)
+	for {
+		s := ""
+		e := websocket.Message.Receive(ws, &s)
+		if e != nil {
+			for k, v := range clipConns {
+				if v == ws {
+					clipConns = append(clipConns[:k], clipConns[k+1:]...)
+					return
+				}
+			}
+			return
+		}
+		cm := ClipMsg{}
+		e = json.Unmarshal([]byte(s), &cm)
+		if e != nil {
+			fmt.Println("unmarshal failed :", e.Error(), s)
+			return
+		}
+		mEventHandler.OnClipboardReceived(cm.Content)
+		homeData.Clipboard = cm.Content
+	}
 }
 func Logd(e interface{}) {
 	fmt.Println(e)

@@ -10,7 +10,8 @@
         if (navigator.language == "zh-CN") {
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
-            if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
+            if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }            
+            if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '动态绑定' }
             document.getElementById('txtFiles').innerHTML = '文件'
             document.getElementById('liveStreamPage').innerHTML = '直播页面'
             window.Succeed = '成功'
@@ -24,7 +25,8 @@
         }
     }
 
-    function copy(me) {
+    function copy() {
+        var me=document.getElementById("btCopy")
         var cb = document.getElementById("cb")
         cb.select()
         document.execCommand("Copy")
@@ -34,7 +36,8 @@
         setTimeout("document.getElementById('btCopy').value='" + myvalue + "';document.getElementById('btCopy').disabled=''", 1000)
     }
 
-    function send(me) {
+    function send() {
+        var me=document.getElementById("btSend")
         var myvalue = me.value
         var str = document.getElementById("cb").value
         var xhr = new XMLHttpRequest()
@@ -91,6 +94,23 @@
         xhr.open("POST", "/upload")
         xhr.send(fd)
     }
+    function BindClipboard(me) {
+        window.wsBind=new WebSocket("ws://"+location.href.split("/")[2]+"/wsClipboard")
+        window.wsBind.onmessage=function(e) {
+            var gobj=JSON.parse(e.data)            
+            document.getElementById("cb").value=gobj.Content
+            copy()
+        }
+        window.wsBind.onopen=function() {
+            console.log('bind open')
+        }
+        window.wsBind.onerror=function(e) {
+            console.log('bind err:'+e.data)
+        }
+        window.wsBind.onclose=function() {
+            console.log('bind closed')
+        }
+    }
     setTimeout("ChangeLanguage()", 50)
     </script>
     <style type="text/css">
@@ -112,15 +132,14 @@
                 <tr>
                     <th style="color: #D81B60" id="txtClipboard">Clipboard</th>
                 </tr>
-                <tr>
+                <tr align="center">
                     <td>
                         <textarea name="cb" id="cb" cols="30" rows="5">{{.Clipboard}}</textarea>
                     </td>
                     <td>
-                        <input type="button" value="Copy" id="btCopy" onclick="copy(this)">
-                        <br>
-                        <br>
-                        <input type="button" value="Send" id="btSend" onclick="send(this)">
+                        <input type="button" value="Copy" id="btCopy" onclick="copy(this)"><br>
+                        <input type="button" value="Send" id="btSend" onclick="send(this)"><br>
+                        <input type="checkbox" onchange="BindClipboard()"><span id="txtBindClip">Bind</span>
                     </td>
                     <td><span id="spanInfo"></span>
                         <br><span></span></td>
