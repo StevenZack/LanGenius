@@ -21,7 +21,7 @@ func Start(eh EventHandler, port, tmpDir, sPath string) {
 	http.HandleFunc("/upload", upload)
 
 	//live part
-	http.Handle("/live/chat", websocket.Handler(chat))
+	http.Handle("/wsLive", websocket.Handler(wsLive))
 	http.HandleFunc("/live", live)
 	http.HandleFunc("/live/camera", camera)
 

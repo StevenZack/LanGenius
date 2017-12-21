@@ -216,8 +216,12 @@ func SetClipboardEnabled(b bool) {
 func SetClipboard(str string) {
 	homeData.Clipboard = str
 	if len(clipConns) > 0 {
-		for _, v := range clipConns {
-			websocket.Message.Send(v, ClipMsg{Content: str, State: "OK"})
+		for k, v := range clipConns {
+			e := websocket.Message.Send(v, ClipMsg{Content: str, State: "OK"})
+			if e != nil {
+				fmt.Println("ws send failed:", e.Error())
+				clipConns = append(clipConns[:k], clipConns[k+1:]...)
+			}
 		}
 	}
 }
@@ -229,6 +233,7 @@ func wsClipboard(ws *websocket.Conn) {
 		s := ""
 		e := websocket.Message.Receive(ws, &s)
 		if e != nil {
+			fmt.Println("ws receive failed:", e.Error())
 			for k, v := range clipConns {
 				if v == ws {
 					clipConns = append(clipConns[:k], clipConns[k+1:]...)

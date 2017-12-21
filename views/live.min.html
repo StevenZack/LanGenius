@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live stream</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<script>function changeLang(){"zh-CN"==navigator.language&&(document.getElementById("btCamera").innerHTML="我要直播")}setTimeout("changeLang()",50)</script>
+</head>
+<body>
+<a href="/live/camera" id="btCamera">Live stream</a><br>
+<img src="" id="receiver" alt="online(0)">
+<script>var image=document.getElementById("receiver"),domain=location.href.split("/")[2],socket=new WebSocket("ws://"+domain+"/wsLive");socket.onmessage=function(e){var o=JSON.parse(e.data);"video"==o.Mtype&&(image.src=o.Data)},socket.onopen=function(e){console.log("connected")},socket.onclose=function(e){console.log("closed")}</script>
+</body>
+</html>
