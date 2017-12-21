@@ -12,7 +12,7 @@
             document.getElementById('btSend').value = "发送"
             document.getElementById('txtClipboard').innerHTML = '剪切板'
             document.getElementById('txtFiles').innerHTML = '文件'
-            document.getElementById('liveStreamPage').value = '直播页面'
+            document.getElementById('liveStreamPage').innerHTML = '直播页面'
             window.Succeed = '成功'
             document.getElementById('submit_button').value = '上传文件'
         } else {
@@ -160,7 +160,7 @@
                 </td></tr>
                 <tr>
                     <td>
-                        <input type="button" int8 onclick="location.href='/live'" id="liveStreamPage" value="Live"></input>
+                        <a href="/live" id="liveStreamPage">Live Page</a>
                     </td>
                 </tr>
             </table>
