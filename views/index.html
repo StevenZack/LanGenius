@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,  initial-scale=1.0">
     <script type="text/javascript">
     function ChangeLanguage() {
-        if (navigator.language = "zh-CN") {
+        if (navigator.language == "zh-CN") {
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
             if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
@@ -29,7 +29,7 @@
         cb.select()
         document.execCommand("Copy")
         var myvalue = me.value
-        me.value += window.Succeed
+        me.value = window.Succeed
         me.disabled = 'disabled'
         setTimeout("document.getElementById('btCopy').value='" + myvalue + "';document.getElementById('btCopy').disabled=''", 1000)
     }
@@ -44,8 +44,9 @@
         fd.append('cb', JSON.stringify(obj))
         xhr.onload = function(e) {
             if (this.status == 200 || this.status == 302 || this.status == 304) {
-                me.value += window.Succeed
-                setTimeout("document.getElementById('btSend').value='" + myvalue + "'", 1000)
+                me.value = window.Succeed
+                me.disabled='disabled'
+                setTimeout("document.getElementById('btSend').value='" + myvalue + "';document.getElementById('btSend').disabled='';", 1000)
             }
         }
         xhr.open("POST", "/send", true)

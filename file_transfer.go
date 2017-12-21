@@ -54,11 +54,11 @@ func send(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	mEventHandler.OnClipboardReceived(gobj.Cb)
+	homeData.Clipboard = gobj.Cb
 	fmt.Fprint(w, "OK")
 }
 func download(w http.ResponseWriter, r *http.Request) {
 	filename, _ := url.QueryUnescape(r.URL.RequestURI()[len("/download/"):])
-	Logd(filename)
 	for _, v := range homeData.Files {
 		if v.Name == filename {
 			w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
@@ -70,7 +70,6 @@ func download(w http.ResponseWriter, r *http.Request) {
 }
 func viewfile(w http.ResponseWriter, r *http.Request) {
 	filename, _ := url.QueryUnescape(r.URL.RequestURI()[len("/viewfile/"):])
-	Logd(filename)
 	for _, v := range homeData.Files {
 		if v.Name == filename {
 			http.ServeFile(w, r, v.Path)
