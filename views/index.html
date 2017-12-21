@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LanGenius - Transfer file easily</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width  initial-scale=1.0 ">
+	<script type="text/javascript">
+		function ChangeLanguage() {
+			if (navigator.language="zh-CN") {
+				document.getElementById('btCopy').value="复制"
+				document.getElementById('btSend').value="发送"
+				document.getElementById('txtClipboard').innerHTML='剪切板'
+				document.getElementById('txtFiles').innerHTML='文件'
+				document.getElementById('liveStreamPage').value='直播'
+				window.Succeed='成功'
+			}else {
+				window.Succeed=' Succeed'
+			}
+		}
+		function copy(me) {
+			var cb=document.getElementById("cb")
+			cb.select()
+			document.execCommand("Copy")
+			var myvalue=me.value
+			me.value+=window.Succeed
+			me.disabled='disabled'
+			setTimeout("document.getElementById('btCopy').value='"+myvalue+"';document.getElementById('btCopy').disabled=''",1000)
+		}
+		function send(me) {
+			var myvalue=me.value
+			var str=document.getElementById("cb").value
+			var xhr=new XMLHttpRequest()
+			var fd=new FormData()
+			var obj=new Object()
+			obj.Cb=str
+			fd.append('cb',JSON.stringify(obj))
+			xhr.onload=function(e) {
+				if (this.status==200||this.status==302||this.status==304) {
+					me.value+=window.Succeed
+					setTimeout("document.getElementById('btSend').value='"+myvalue+"'",1000)
+				}
+			}
+			xhr.open("POST", "/send", true)
+			xhr.send(fd)
+		}
+		setTimeout("ChangeLanguage()", 50)
+	</script>
+	<style type="text/css">
+		.wrapper{
+			background-color: #fff;
+			display: inline-block;
+			padding: 5px;
+			box-shadow: 2px 2px 10px #000;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body style="background-color: #58c6d5;font-family: sans-serif;padding: 10px;margin: 0px;">
+<center>
+<div class="wrapper"><table>
+	<tr>
+		<th style="color: #D81B60" id="txtClipboard">Clipboard</th>
+	</tr>
+	<tr>
+		<td>
+			<textarea name="cb" id="cb" cols="30" rows="5">{{.CbContent}}</textarea>
+		</td>
+		<td>
+			<input type="button" value="Copy" id="btCopy" onclick="copy(this)"><br>
+			<br>	
+			<input type="button" value="Send" id="btSend" onclick="send(this)">
+		</td>
+		<td><span id="spanInfo"></span><br><span></span></td>
+	</tr>
+	<tr>
+	<td colspan="2"><hr></td>
+	</tr>
+</table></div>
+<br><br>
+<div class="wrapper">
+<table>
+	<tr>
+		<th style="color: #1E88E5" id="txtFiles">Files</th>
+	</tr>
+	<tr>
+		<td colspan="2">
+		{{range .Files}}
+			<a href="/downloadFile?filename={{.Name}}">
+			{{.Name}}</a><br>
+		{{end}}
+		</td>
+	</tr>
+	<tr>
+	<td colspan="2"><hr></td>
+	</tr>
+	<tr><td>
+			<input type="button" int8 onclick="location.href=getUploadServerHost()" id="uploadPageBt" value="Upload"></input>
+	</td></tr>	
+	<tr><td>
+			<input type="button" int8 onclick="location.href='/live'" id="liveStreamPage" value="Live"></input>
+	</td></tr>
+</table>
+</div><br>
+
+</center>
+</body>
+</html>
