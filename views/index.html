@@ -62,7 +62,7 @@
         for (var i = 0; i < file.files.length; i++) {
             fd.append("myUploadFile", file.files[i])
         }
-        uploading()
+        
         var xhr = new XMLHttpRequest()
         xhr.upload.addEventListener("progress", function(evt) {
             if (evt.lengthComputable) {
@@ -76,25 +76,29 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 document.getElementById("result").innerHTML = xhr.responseText;
-                uploadDone()
+            setTimeout('uploadDone()', 1000)
             }
         }
         xhr.addEventListener("load", function(evt) {
             document.getElementById("result").innerHTML = evt.target.responseText
-            uploadDone()
+            setTimeout('uploadDone()', 1000)
         }, false)
         xhr.addEventListener("error", function(evt) {
             document.getElementById("result").innerHTML = "Something went wrong ."
-            uploadDone()
+            setTimeout('uploadDone()', 1000)
         }, false)
         xhr.addEventListener("abort", function(evt) {
             document.getElementById("result").innerHTML = "Abort ."
-            uploadDone()
+            setTimeout('uploadDone()', 1000)
         }, false)
         xhr.open("POST", "/upload")
         xhr.send(fd)
     }
-
+    function uploadDone() {
+        document.getElementById("result").innerHTML=""
+        document.getElementById("uploadProgress").value=0
+        document.getElementById("submit_button").disabled='disabled'
+    }
     function BindClipboard(me) {
         if (me.checked) {
             window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")

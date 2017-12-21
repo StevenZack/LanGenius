@@ -161,7 +161,6 @@ func wsClipboard(ws *websocket.Conn) {
 			fmt.Println("unmarshal failed :", e.Error(), s)
 			return
 		}
-		fmt.Println(cm.Content)
 		mEventHandler.OnClipboardReceived(cm.Content)
 		homeData.Clipboard = cm.Content
 	}
