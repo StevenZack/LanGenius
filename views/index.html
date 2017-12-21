@@ -4,22 +4,26 @@
 <head>
     <title>LanGenius - Transfer file easily</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width  initial-scale=1.0 ">
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
     <script type="text/javascript">
     function ChangeLanguage() {
         if (navigator.language = "zh-CN") {
-            document.getElementById('btCopy').value = "复制"
-            document.getElementById('btSend').value = "发送"
-            document.getElementById('txtClipboard').innerHTML = '剪切板'
+            if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
+            if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
+            if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
             document.getElementById('txtFiles').innerHTML = '文件'
             document.getElementById('liveStreamPage').innerHTML = '直播页面'
             window.Succeed = '成功'
             document.getElementById('submit_button').value = '上传文件'
+            var as = document.getElementsByClassName("downloadA")
+            for (var i = 0; i < as.length; i++) {
+                as[i].innerHTML = '下载'
+            }
         } else {
             window.Succeed = ' Succeed'
         }
     }
-    
+
     function copy(me) {
         var cb = document.getElementById("cb")
         cb.select()
@@ -109,7 +113,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <textarea name="cb" id="cb" cols="30" rows="5">{{.CbContent}}</textarea>
+                        <textarea name="cb" id="cb" cols="30" rows="5">{{.Clipboard}}</textarea>
                     </td>
                     <td>
                         <input type="button" value="Copy" id="btCopy" onclick="copy(this)">
@@ -138,8 +142,8 @@
                 <tr>
                     <td colspan="2">
                         {{range .Files}}
-                        <a href="/downloadFile?filename={{.Name}}">
-			{{.Name}}</a>
+                        <a href="/viewfile/{{.Name}}">{{.Name}}</a>
+                        <a href="/download/{{.Name}}" class="downloadA">Download</a>
                         <br> {{end}}
                     </td>
                 </tr>
@@ -154,10 +158,12 @@
                         <input type="button" id="submit_button" disabled value="Upload" onclick="DoUpload()">
                     </td>
                 </tr>
-                <tr><td>
-                	<progress value="0" max="100" id="uploadProgress" style="height: 4px; width: 100%"></progress>
-                	<div id="result"></div>
-                </td></tr>
+                <tr>
+                    <td>
+                        <progress value="0" max="100" id="uploadProgress" style="height: 4px; width: 100%"></progress>
+                        <div id="result"></div>
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         <a href="/live" id="liveStreamPage">Live Page</a>

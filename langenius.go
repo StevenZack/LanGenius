@@ -7,12 +7,14 @@ import (
 	"os"
 )
 
-func Start(eh EventHandler, port, pkg string) {
+func Start(eh EventHandler, port, tmpDir, sPath string) {
 	mEventHandler = eh
-	os.Setenv("TMPDIR", pkg)
+	storagePath = sPath
+	os.Setenv("TMPDIR", tmpDir)
 	http.HandleFunc("/", home)
 	http.HandleFunc("/send", send)
-	http.HandleFunc("/downloadFile/", downloadFile)
+	http.HandleFunc("/download/", download)
+	http.HandleFunc("/viewfile/", viewfile)
 	http.HandleFunc("/upload", upload)
 
 	//live part
@@ -26,4 +28,20 @@ func Start(eh EventHandler, port, pkg string) {
 			fmt.Println(e)
 		}
 	}()
+}
+func contains(s, p string) bool {
+	for _, v := range s {
+		if string(v) == p {
+			return true
+		}
+	}
+	return false
+}
+func getFileName(s string) string {
+	for i := len(s) - 2; i > -1; i-- {
+		if s[i:i+1] == "/" {
+			return s[i+1:]
+		}
+	}
+	return ""
 }
