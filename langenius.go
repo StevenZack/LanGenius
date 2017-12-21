@@ -10,7 +10,9 @@ import (
 func Start(eh EventHandler, port, tmpDir, sPath string) {
 	mEventHandler = eh
 	storagePath = sPath
-	os.Setenv("TMPDIR", tmpDir)
+	if tmpDir != "" {
+		os.Setenv("TMPDIR", tmpDir)
+	}
 	http.HandleFunc("/", home)
 	http.HandleFunc("/send", send)
 	http.HandleFunc("/download/", download)

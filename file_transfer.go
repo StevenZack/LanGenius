@@ -37,7 +37,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// t.Parse(`
 	// 	`)
 	// t.Execute(w, homeData)
-	t, e := template.ParseFiles("C:/Users/asd/go/src/LanGenius/views/index.html")
+	t, e := template.ParseFiles("/home/asd/go/src/LanGenius/views/index.html")
 	if e != nil {
 		fmt.Println(e)
 		return
