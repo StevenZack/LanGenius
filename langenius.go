@@ -3,21 +3,8 @@ package LanGenius
 import (
 	"fmt"
 	"golang.org/x/net/websocket"
-	"html/template"
 	"net/http"
 	"os"
-)
-
-type EventHandler interface {
-	OnClipboardReceived(string)
-	OnFileReceived(string)
-}
-type FileEntry struct {
-	Name, Path string
-}
-
-var (
-	mEventHandler EventHandler
 )
 
 func Start(eh EventHandler, port, pkg string) {
@@ -39,17 +26,4 @@ func Start(eh EventHandler, port, pkg string) {
 			fmt.Println(e)
 		}
 	}()
-}
-
-var (
-	homeData struct {
-		Files     []FileEntry
-		Clipboard string
-	}
-)
-
-func home(w http.ResponseWriter, r *http.Request) {
-	t := template.New("homeTPL")
-	t.Parse(``)
-	t.Execute(w, homeData)
 }
