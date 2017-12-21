@@ -10,7 +10,7 @@
         if (navigator.language == "zh-CN") {
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
-            if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }            
+            if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
             if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '动态绑定' }
             document.getElementById('txtFiles').innerHTML = '文件'
             document.getElementById('liveStreamPage').innerHTML = '直播页面'
@@ -26,7 +26,7 @@
     }
 
     function copy() {
-        var me=document.getElementById("btCopy")
+        var me = document.getElementById("btCopy")
         var cb = document.getElementById("cb")
         cb.select()
         document.execCommand("Copy")
@@ -37,7 +37,7 @@
     }
 
     function send() {
-        var me=document.getElementById("btSend")
+        var me = document.getElementById("btSend")
         var myvalue = me.value
         var str = document.getElementById("cb").value
         var xhr = new XMLHttpRequest()
@@ -48,7 +48,7 @@
         xhr.onload = function(e) {
             if (this.status == 200 || this.status == 302 || this.status == 304) {
                 me.value = window.Succeed
-                me.disabled='disabled'
+                me.disabled = 'disabled'
                 setTimeout("document.getElementById('btSend').value='" + myvalue + "';document.getElementById('btSend').disabled='';", 1000)
             }
         }
@@ -94,21 +94,38 @@
         xhr.open("POST", "/upload")
         xhr.send(fd)
     }
+
     function BindClipboard(me) {
-        window.wsBind=new WebSocket("ws://"+location.href.split("/")[2]+"/wsClipboard")
-        window.wsBind.onmessage=function(e) {
-            var gobj=JSON.parse(e.data)            
-            document.getElementById("cb").value=gobj.Content
-            copy()
+        if (me.checked) {
+            window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")
+            window.wsBind.onmessage = function(e) {
+                var gobj = JSON.parse(e.data)
+                document.getElementById("cb").value = gobj.Content
+                copy()
+            }
+            window.wsBind.onopen = function() {
+                console.log('bind open')
+            }
+            window.wsBind.onerror = function(e) {
+                console.log('bind err:' + e.data)
+            }
+            window.wsBind.onclose = function() {
+                console.log('bind closed')
+                window.wsBind = null
+            }
+        } else {
+            if (window.wsBind != null) {
+                window.wsBind.close()
+                window.wsBind = null
+            }
         }
-        window.wsBind.onopen=function() {
-            console.log('bind open')
-        }
-        window.wsBind.onerror=function(e) {
-            console.log('bind err:'+e.data)
-        }
-        window.wsBind.onclose=function() {
-            console.log('bind closed')
+    }
+
+    function clipOnChange(me) {
+        if (window.wsBind != null) {
+            var obj = new Object()
+            obj.Content = me.value
+            window.wsBind.send(JSON.stringify(obj))
         }
     }
     setTimeout("ChangeLanguage()", 50)
@@ -134,12 +151,14 @@
                 </tr>
                 <tr align="center">
                     <td>
-                        <textarea name="cb" id="cb" cols="30" rows="5">{{.Clipboard}}</textarea>
+                        <textarea name="cb" id="cb" cols="30" rows="5" onchange="clipOnChange(this)">{{.Clipboard}}</textarea>
                     </td>
                     <td>
-                        <input type="button" value="Copy" id="btCopy" onclick="copy(this)"><br>
-                        <input type="button" value="Send" id="btSend" onclick="send(this)"><br>
-                        <input type="checkbox" onchange="BindClipboard()"><span id="txtBindClip">Bind</span>
+                        <input type="button" value="Copy" id="btCopy" onclick="copy(this)">
+                        <br>
+                        <input type="button" value="Send" id="btSend" onclick="send(this)">
+                        <br>
+                        <input type="checkbox" id="btBind" onchange="BindClipboard(this)"><span id="txtBindClip">Bind</span>
                     </td>
                     <td><span id="spanInfo"></span>
                         <br><span></span></td>
