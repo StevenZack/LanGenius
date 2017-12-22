@@ -11,16 +11,6 @@ import (
 	"os"
 )
 
-type EventHandler interface {
-	OnClipboardReceived(string)
-	OnFileReceived(string)
-}
-
-var (
-	mEventHandler EventHandler
-	storagePath   string
-)
-
 type FileEntry struct {
 	Name, Path string
 }
@@ -201,9 +191,6 @@ func SetStoragePath(str string) {
 }
 
 //clipboard part
-type ClipMsg struct {
-	State, Content string
-}
 
 var (
 	clipConns []*websocket.Conn
@@ -217,7 +204,7 @@ func SetClipboard(str string) {
 	homeData.Clipboard = str
 	if len(clipConns) > 0 {
 		for k, v := range clipConns {
-			e := websocket.Message.Send(v, ClipMsg{Content: str, State: "OK"})
+			e := websocket.Message.Send(v, Msg{Content: str, State: "OK"})
 			if e != nil {
 				fmt.Println("ws send failed:", e.Error())
 				clipConns = append(clipConns[:k], clipConns[k+1:]...)
@@ -242,7 +229,7 @@ func wsClipboard(ws *websocket.Conn) {
 			}
 			return
 		}
-		cm := ClipMsg{}
+		cm := Msg{}
 		e = json.Unmarshal([]byte(s), &cm)
 		if e != nil {
 			fmt.Println("unmarshal failed :", e.Error(), s)

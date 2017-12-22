@@ -3,13 +3,30 @@ package LanGenius
 import (
 	"fmt"
 	"golang.org/x/net/websocket"
+	"net"
 	"net/http"
 	"os"
 )
 
+var (
+	mEventHandler      EventHandler
+	storagePath, mPort string
+)
+
+type EventHandler interface {
+	OnClipboardReceived(string)
+	OnFileReceived(string)
+	OnDeviceOnlineListener(string)
+	OnDeviceOfflineListener(string)
+}
+type Msg struct {
+	State, Type, Content string
+}
+
 func Start(eh EventHandler, port, tmpDir, sPath string) {
 	mEventHandler = eh
 	storagePath = sPath
+	mPort = port
 	if tmpDir != "" {
 		os.Setenv("TMPDIR", tmpDir)
 	}
@@ -73,6 +90,11 @@ func GetIP() string {
 		}
 	}
 	for _, v := range strs {
+		if v[:8] == "192.168." {
+			return v
+		}
+	}
+	for _, v := range strs {
 		if v[:3] == "10." {
 			return v
 		}
@@ -83,14 +105,32 @@ func GetIP() string {
 		}
 	}
 	for _, v := range strs {
-		if v[:8] == "192.168." {
-			return v
-		}
-	}
-	for _, v := range strs {
 		if v != "127.0.0.1" && v != "::1" {
 			return v
 		}
 	}
 	return strs[0]
+}
+func IsMyIP(str string) bool {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		for _, addr := range addrs {
+			switch v := addr.(type) {
+			case *net.IPNet:
+				if v.IP.String() == str {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
