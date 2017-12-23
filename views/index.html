@@ -25,6 +25,7 @@
         }
         if (getCookie("LanGenius-Bind-Clipboard") == "checked") {
             document.getElementById("btBind").checked = true
+            BindClipboard()
         }
     }
 
@@ -74,6 +75,7 @@
         }
         xhr.open("POST", "/send", true)
         xhr.send(fd)
+        console.log('sent clip')
     }
 
     function DoUpload() {
@@ -137,7 +139,8 @@
         document.getElementById("myUploadFile").disabled=''
     }
 
-    function BindClipboard(me) {
+    function BindClipboard() {
+        var me=document.getElementById("btBind")
         if (me.checked) {
             setCookie("LanGenius-Bind-Clipboard", "checked", 365)
             window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")
@@ -166,10 +169,12 @@
     }
 
     function clipOnChange(me) {
+        console.log('onchange')
         if (window.wsBind != null) {
             var obj = new Object()
             obj.Content = me.value
             window.wsBind.send(JSON.stringify(obj))
+            console.log('bind sent')
         }
     }
     setTimeout("ChangeLanguage()", 50)
@@ -195,7 +200,7 @@
                 </tr>
                 <tr align="center">
                     <td>
-                        <textarea name="cb" id="cb" cols="30" rows="5" onchange="clipOnChange(this)">{{.Clipboard}}</textarea>
+                        <textarea name="cb" id="cb" cols="30" rows="5" onkeyup="clipOnChange(this)">{{.Clipboard}}</textarea>
                     </td>
                     <td>
                         <input type="button" value="Copy" id="btCopy" onclick="copy(this)">
