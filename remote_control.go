@@ -11,8 +11,9 @@ var (
 )
 
 func handleRemoteControlCmd(msg Msg) {
+	b, _ := json.Marshal(msg)
 	if RemoteControlEnabled {
-		mEventHandler.OnRemoteControlCmdReceived(msg)
+		mEventHandler.OnRemoteControlCmdReceived(string(b))
 	}
 }
 func SetRemoteControlStatus(b bool) {
