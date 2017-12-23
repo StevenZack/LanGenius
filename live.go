@@ -38,7 +38,7 @@ func live(w http.ResponseWriter, r *http.Request) {
 	</html>
 		`)
 	// t, _ := template.ParseFiles("/home/asd/go/src/LanGenius/views/live.html")
-	// t.Execute(w, nil)
+	t.Execute(w, nil)
 }
 func camera(w http.ResponseWriter, r *http.Request) {
 	// t, _ := template.ParseFiles("/home/asd/go/src/LanGenius/views/camera.html")
@@ -60,6 +60,7 @@ func camera(w http.ResponseWriter, r *http.Request) {
 	</body>
 	</html>
 		`)
+	t.Execute(w, nil)
 }
 func sendToAll(str string) {
 	for k, v := range members {

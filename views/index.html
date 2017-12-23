@@ -11,7 +11,7 @@
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
             if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
-            if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '动态绑定' }
+            if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '绑定' }
             document.getElementById('txtFiles').innerHTML = '文件'
             document.getElementById('liveStreamPage').innerHTML = '直播页面'
             window.Succeed = '成功'
@@ -23,10 +23,11 @@
         } else {
             window.Succeed = ' Succeed'
         }
-        if (getCookie("LanGenius-Bind-Clipboard")=="checked") {
-            document.getElementById("btBind").checked=true
+        if (getCookie("LanGenius-Bind-Clipboard") == "checked") {
+            document.getElementById("btBind").checked = true
         }
     }
+
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -43,6 +44,7 @@
         }
         return "";
     }
+
     function copy() {
         var me = document.getElementById("btCopy")
         var cb = document.getElementById("cb")
@@ -80,7 +82,8 @@
         for (var i = 0; i < file.files.length; i++) {
             fd.append("myUploadFile", file.files[i])
         }
-        
+
+        uploading()
         var xhr = new XMLHttpRequest()
         xhr.upload.addEventListener("progress", function(evt) {
             if (evt.lengthComputable) {
@@ -94,7 +97,7 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 document.getElementById("result").innerHTML = xhr.responseText;
-            setTimeout('uploadDone()', 1000)
+                setTimeout('uploadDone()', 1000)
             }
         }
         xhr.addEventListener("load", function(evt) {
@@ -112,14 +115,31 @@
         xhr.open("POST", "/upload")
         xhr.send(fd)
     }
-    function uploadDone() {
-        document.getElementById("result").innerHTML=""
-        document.getElementById("uploadProgress").value=0
+
+    function uploading() {
+        if (navigator.language == "zh-CN") {
+            document.getElementById("submit_button").value = '上传中...'
+        } else {
+            document.getElementById("submit_button").value = 'Uploading'
+        }
         document.getElementById("submit_button").disabled='disabled'
+        document.getElementById("myUploadFile").disabled='disabled'
     }
+
+    function uploadDone() {
+        document.getElementById("uploadProgress").value = 0
+        if (navigator.language == "zh-CN") {
+            document.getElementById("submit_button").value = '上传文件'
+        } else {
+            document.getElementById("submit_button").value = 'Upload'
+        }
+        document.getElementById("submit_button").disabled = ''
+        document.getElementById("myUploadFile").disabled=''
+    }
+
     function BindClipboard(me) {
         if (me.checked) {
-            setCookie("LanGenius-Bind-Clipboard","checked",365)
+            setCookie("LanGenius-Bind-Clipboard", "checked", 365)
             window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")
             window.wsBind.onmessage = function(e) {
                 var gobj = JSON.parse(e.data)
@@ -137,7 +157,7 @@
                 window.wsBind = null
             }
         } else {
-            setCookie("LanGenius-Bind-Clipboard","unchecked",365)
+            setCookie("LanGenius-Bind-Clipboard", "unchecked", 365)
             if (window.wsBind != null) {
                 window.wsBind.close()
                 window.wsBind = null
