@@ -100,17 +100,17 @@ func GetIP() string {
 		}
 	}
 	for _, v := range strs {
-		if v[:8] == "192.168." {
+		if len(v) > 8 && v[:8] == "192.168." {
 			return v
 		}
 	}
 	for _, v := range strs {
-		if v[:3] == "10." {
+		if len(v) > 3 && v[:3] == "10." {
 			return v
 		}
 	}
 	for _, v := range strs {
-		if v[:4] == "172." {
+		if len(v) > 4 && v[:4] == "172." {
 			return v
 		}
 	}
@@ -121,6 +121,7 @@ func GetIP() string {
 	}
 	return strs[0]
 }
+
 func IsMyIP(str string) bool {
 	ifaces, err := net.Interfaces()
 	if err != nil {
