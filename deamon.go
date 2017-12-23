@@ -55,9 +55,9 @@ func routeUdpMsg(msg Msg) {
 }
 func handleDeamon(msg Msg) {
 	if msg.State == "Online" {
-		mEventHandler.OnDeviceOnlineListener(msg)
-	} else {
-		mEventHandler.OnDeviceOfflineListener(msg)
+		mEventHandler.OnDeviceOnline(msg)
+	} else if msg.State == "Offline" {
+		mEventHandler.OnDeviceOffline(msg)
 	}
 }
 func StopDeamon() {

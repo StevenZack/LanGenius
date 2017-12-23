@@ -15,7 +15,7 @@ func handleRemoteControlCmd(msg Msg) {
 		mEventHandler.OnRemoteControlCmdReceived(msg)
 	}
 }
-func SetRemoteControlEnabled(b bool) {
+func SetRemoteControlStatus(b bool) {
 	RemoteControlEnabled = b
 	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
 	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Content: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})

@@ -16,8 +16,8 @@ var (
 type EventHandler interface {
 	OnClipboardReceived(string)
 	OnFileReceived(string)
-	OnDeviceOnlineListener(Msg)
-	OnDeviceOfflineListener(Msg)
+	OnDeviceOnline(Msg)
+	OnDeviceOffline(Msg)
 	OnRemoteControlCmdReceived(Msg)
 }
 type Msg struct {
