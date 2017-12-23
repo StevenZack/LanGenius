@@ -16,19 +16,29 @@ var (
 type EventHandler interface {
 	OnClipboardReceived(string)
 	OnFileReceived(string)
-	OnDeviceOnlineListener(string)
-	OnDeviceOfflineListener(string)
+	OnDeviceOnlineListener(Msg)
+	OnDeviceOfflineListener(Msg)
+	OnRemoteControlCmdReceived(Msg)
 }
 type Msg struct {
-	State, Type, Content string
+	State, Type, Content, Info, RemoteControlCmd string
+	RemoteControlStatus                          bool
 }
 
 func Start(eh EventHandler, port, tmpDir, sPath string) {
 	mEventHandler = eh
-	storagePath = sPath
+	if sPath[len(sPath)-1:] != "/" {
+		storagePath = sPath + "/"
+	} else {
+		storagePath = sPath
+	}
 	mPort = port
 	if tmpDir != "" {
-		os.Setenv("TMPDIR", tmpDir)
+		if tmpDir[len(tmpDir)-1:] != "/" {
+			os.Setenv("TMPDIR", tmpDir+"/")
+		} else {
+			os.Setenv("TMPDIR", tmpDir)
+		}
 	}
 	http.HandleFunc("/", home)
 	http.HandleFunc("/send", send)
