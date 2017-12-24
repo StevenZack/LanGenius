@@ -11,7 +11,7 @@
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
             if (document.getElementById('txtClipboard') != null) { document.getElementById('txtClipboard').innerHTML = '剪切板' }
-            if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '绑定' }
+            if (document.getElementById('txtBindClip') != null) { document.getElementById('txtBindClip').innerHTML = '同步' }
             document.getElementById('txtFiles').innerHTML = '文件'
             document.getElementById('liveStreamPage').innerHTML = '直播页面'
             window.Succeed = '成功'
@@ -164,6 +164,7 @@
         }
         document.getElementById("submit_button").disabled = ''
         document.getElementById("myUploadFile").disabled = ''
+        location.href=location.href
     }
 
     function BindClipboard() {
@@ -194,17 +195,6 @@
             }
         }
     }
-
-    function clipOnChange(me) {
-        console.log('onchange')
-        detectLink()
-        if (window.wsBind != null) {
-            var obj = new Object()
-            obj.Content = me.value
-            window.wsBind.send(JSON.stringify(obj))
-            console.log('bind sent')
-        }
-    }
     setTimeout("initMe()", 50)
     </script>
     <style type="text/css">
@@ -228,7 +218,7 @@
                 </tr>
                 <tr align="center">
                     <td>
-                        <textarea name="cb" id="cb" cols="30" rows="5" onkeyup="clipOnChange(this)">{{.Clipboard}}</textarea>
+                        <textarea name="cb" id="cb" cols="30" rows="5" onkeyup="detectLink()">{{.Clipboard}}</textarea>
                     </td>
                     <td>
                         <a href="" id="openUrl" target="_blank"></a>
@@ -237,7 +227,7 @@
                         <br>
                         <input type="button" value="Send" id="btSend" onclick="send(this)">
                         <br>
-                        <input type="checkbox" id="btBind" onchange="BindClipboard(this)"><span id="txtBindClip">Bind</span>
+                        <input type="checkbox" id="btBind" onchange="BindClipboard()"><span id="txtBindClip">Bind</span>
                     </td>
                     <td><span id="spanInfo"></span>
                         <br><span></span></td>
