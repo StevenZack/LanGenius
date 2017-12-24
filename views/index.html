@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,  initial-scale=1.0">
     <script type="text/javascript">
-    function ChangeLanguage() {
+    function initMe() {
         if (navigator.language == "zh-CN") {
             if (document.getElementById('btCopy') != null) { document.getElementById('btCopy').value = "复制" }
             if (document.getElementById('btSend') != null) { document.getElementById('btSend').value = "发送" }
@@ -26,6 +26,32 @@
         if (getCookie("LanGenius-Bind-Clipboard") == "checked") {
             document.getElementById("btBind").checked = true
             BindClipboard()
+        }
+        //detect link
+        detectLink()
+    }
+    function detectLink() {
+        if (document.getElementById("cb")==null) {
+            return
+        }
+        var cb = document.getElementById("cb").value
+        var link = ''
+        if (cb.indexOf("http://") > -1) {
+            var end = cb.indexOf(" ", cb.indexOf("http://"))
+            link = cb.substring(cb.indexOf('http://'), end == -1 ? cb.length : end)
+        } else if (cb.indexOf('https://') > -1) {
+            var end = cb.indexOf(" ", cb.indexOf("https://"))
+            link = cb.substring(cb.indexOf('https://'), end == -1 ? cb.length : end)
+        }
+        if (link != '') {
+            if (navigator.language == 'zh-CN') {
+                document.getElementById('openUrl').innerHTML = '打开网址'
+            } else {
+                document.getElementById('openUrl').innerHTML = 'Open URL'
+            }
+            document.getElementById('openUrl').href = link
+        }else {
+            document.getElementById('openUrl').innerHTML = ''
         }
     }
 
@@ -47,6 +73,7 @@
     }
 
     function copy() {
+        detectLink()
         var me = document.getElementById("btCopy")
         var cb = document.getElementById("cb")
         cb.select()
@@ -124,8 +151,8 @@
         } else {
             document.getElementById("submit_button").value = 'Uploading'
         }
-        document.getElementById("submit_button").disabled='disabled'
-        document.getElementById("myUploadFile").disabled='disabled'
+        document.getElementById("submit_button").disabled = 'disabled'
+        document.getElementById("myUploadFile").disabled = 'disabled'
     }
 
     function uploadDone() {
@@ -136,11 +163,11 @@
             document.getElementById("submit_button").value = 'Upload'
         }
         document.getElementById("submit_button").disabled = ''
-        document.getElementById("myUploadFile").disabled=''
+        document.getElementById("myUploadFile").disabled = ''
     }
 
     function BindClipboard() {
-        var me=document.getElementById("btBind")
+        var me = document.getElementById("btBind")
         if (me.checked) {
             setCookie("LanGenius-Bind-Clipboard", "checked", 365)
             window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")
@@ -170,6 +197,7 @@
 
     function clipOnChange(me) {
         console.log('onchange')
+        detectLink()
         if (window.wsBind != null) {
             var obj = new Object()
             obj.Content = me.value
@@ -177,7 +205,7 @@
             console.log('bind sent')
         }
     }
-    setTimeout("ChangeLanguage()", 50)
+    setTimeout("initMe()", 50)
     </script>
     <style type="text/css">
     .wrapper {
@@ -203,6 +231,8 @@
                         <textarea name="cb" id="cb" cols="30" rows="5" onkeyup="clipOnChange(this)">{{.Clipboard}}</textarea>
                     </td>
                     <td>
+                        <a href="" id="openUrl" target="_blank"></a>
+                        <br>
                         <input type="button" value="Copy" id="btCopy" onclick="copy(this)">
                         <br>
                         <input type="button" value="Send" id="btSend" onclick="send(this)">
