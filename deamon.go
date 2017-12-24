@@ -21,10 +21,7 @@ func StartDeamon(osI string) {
 			fmt.Println(e)
 			return
 		}
-
-		broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
-		broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Content: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
-		deamonConn.WriteToUDP(broData, broadcastAddr)
+		DeamonBroadcastMe()
 		b := make([]byte, 4096)
 		for {
 			n, ra, e := deamonConn.ReadFromUDP(b)
@@ -45,6 +42,13 @@ func StartDeamon(osI string) {
 		}
 	}()
 }
+func DeamonBroadcastMe() {
+	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
+	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Content: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
+	if deamonConn != nil {
+		deamonConn.WriteToUDP(broData, broadcastAddr)
+	}
+}
 func routeUdpMsg(msg Msg) {
 	switch msg.Type {
 	case "LanGenius-Deamon":
@@ -57,6 +61,7 @@ func handleDeamon(msg Msg) {
 	b, _ := json.Marshal(msg)
 	if msg.State == "Online" {
 		mEventHandler.OnDeviceOnline(string(b))
+		DeamonBroadcastMe()
 	} else if msg.State == "Offline" {
 		mEventHandler.OnDeviceOffline(string(b))
 	}
@@ -64,5 +69,7 @@ func handleDeamon(msg Msg) {
 func StopDeamon() {
 	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
 	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Offline", Content: mPort})
-	deamonConn.WriteToUDP(broData, broadcastAddr)
+	if deamonConn != nil {
+		deamonConn.WriteToUDP(broData, broadcastAddr)
+	}
 }
