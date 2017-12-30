@@ -19,13 +19,19 @@ type EventHandler interface {
 	OnDeviceOnline(string)
 	OnDeviceOffline(string)
 	OnRemoteControlCmdReceived(string)
+	OnMessageReceived(string)
 }
 type Msg struct {
-	State, Type, Content, Info, RemoteControlCmd string
-	RemoteControlStatus                          bool
+	State, Type, IP, Port, Info string
+	Message                     string
+	RemoteControlCmd            string
+	RemoteControlStatus         bool
 }
 
 func Start(eh EventHandler, port, tmpDir, sPath string) {
+	go Run(eh, port, tmpDir, sPath)
+}
+func Run(eh EventHandler, port, tmpDir, sPath string) {
 	mEventHandler = eh
 	if sPath[len(sPath)-1:] != "/" {
 		storagePath = sPath + "/"
@@ -50,14 +56,12 @@ func Start(eh EventHandler, port, tmpDir, sPath string) {
 	//live part
 	http.Handle("/wsLive", websocket.Handler(wsLive))
 	http.HandleFunc("/live", live)
-	http.HandleFunc("/live/camera", camera)
+	http.HandleFunc("/camera", camera)
 
-	go func() {
-		e := http.ListenAndServe(port, nil)
-		if e != nil {
-			fmt.Println(e)
-		}
-	}()
+	e := http.ListenAndServe(port, nil)
+	if e != nil {
+		fmt.Println(e)
+	}
 }
 func contains(s, p string) bool {
 	for _, v := range s {

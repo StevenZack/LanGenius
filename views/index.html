@@ -174,7 +174,7 @@
             window.wsBind = new WebSocket("ws://" + location.href.split("/")[2] + "/wsClipboard")
             window.wsBind.onmessage = function(e) {
                 var gobj = JSON.parse(e.data)
-                document.getElementById("cb").value = gobj.Content
+                document.getElementById("cb").value = gobj.Message
                 copy()
             }
             window.wsBind.onopen = function() {

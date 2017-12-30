@@ -26,6 +26,7 @@ func StartDeamon(osI string) {
 				break
 			}
 			if IsMyIP(ra.IP.String()) {
+				// fmt.Println("isMyIP:", string(b[:n]))
 				continue
 			}
 			msg := Msg{}
@@ -33,15 +34,15 @@ func StartDeamon(osI string) {
 			if e != nil {
 				continue
 			}
-			msg.Content = ra.IP.String() + msg.Content
+			msg.IP = ra.IP.String()
 			go routeUdpMsg(msg)
 		}
 	}()
 }
 func DeamonBroadcastMe() {
-	fmt.Println("online broadcast")
+	// fmt.Println("online broadcast")
 	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
-	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Content: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
+	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Port: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
 	deamonConn.WriteToUDP(broData, broadcastAddr)
 }
 func routeUdpMsg(msg Msg) {
@@ -50,11 +51,12 @@ func routeUdpMsg(msg Msg) {
 		handleDeamon(msg)
 	case "LanGenius-RemoteControlCmd":
 		handleRemoteControlCmd(msg)
+	case "LanGenius-Message":
+		handleMessage(msg)
 	}
 }
 func handleDeamon(msg Msg) {
 	b, _ := json.Marshal(msg)
-	fmt.Println("new Msg:", msg.State)
 	if msg.State == "Online" {
 		mEventHandler.OnDeviceOnline(string(b))
 		DeamonBroadcastMe()
@@ -64,6 +66,19 @@ func handleDeamon(msg Msg) {
 }
 func StopDeamon() {
 	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
-	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Offline", Content: mPort})
+	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Offline", Port: mPort})
 	deamonConn.WriteToUDP(broData, broadcastAddr)
+}
+func handleMessage(msg Msg) {
+	b, _ := json.Marshal(msg)
+	mEventHandler.OnMessageReceived(string(b))
+}
+func SendMessage(data string) {
+	// fmt.Println("sent:", data)
+	msg := Msg{}
+	json.Unmarshal([]byte(data), &msg)
+	sendAddr, _ := net.ResolveUDPAddr("udp", msg.IP+DeamonPort)
+	msg.Type = "LanGenius-Message"
+	b, _ := json.Marshal(msg)
+	deamonConn.WriteToUDP(b, sendAddr)
 }

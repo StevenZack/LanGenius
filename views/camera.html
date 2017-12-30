@@ -29,13 +29,14 @@
             console.log(e);
         }
         if (v.src) {
-            data = { Data: mcavas.toDataURL("image/jpeg", 0.5), Mtype: 'video' }
+            var quality=location.href.split("?")[1].split("=")[1]
+            data = { Data: mcavas.toDataURL("image/jpeg", new Number(quality)), Mtype: 'video' }
             socket.send(JSON.stringify(data))
         }
         setTimeout(draw, 33)
     }
 
-    var socket = new WebSocket(location.href.replace("http", "ws").replace("live/camera", "wsLive"))
+    var socket = new WebSocket(location.href.replace("http", "ws").replace("camera", "wsLive"))
     socket.onopen = function(e) {
         console.log('connected')
         draw()

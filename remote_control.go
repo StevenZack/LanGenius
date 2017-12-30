@@ -19,13 +19,13 @@ func handleRemoteControlCmd(msg Msg) {
 func SetRemoteControlStatus(b bool) {
 	RemoteControlEnabled = b
 	broadcastAddr, _ := net.ResolveUDPAddr("udp", "255.255.255.255"+DeamonPort)
-	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Content: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
+	broData, _ := json.Marshal(Msg{Type: "LanGenius-Deamon", State: "Online", Port: mPort, Info: osInfo, RemoteControlStatus: RemoteControlEnabled})
 	deamonConn.WriteToUDP(broData, broadcastAddr)
 }
 func SendRemoteControlCmd(data string) {
 	msg := Msg{}
 	json.Unmarshal([]byte(data), &msg)
-	sendAddr, _ := net.ResolveUDPAddr("udp", msg.Content)
+	sendAddr, _ := net.ResolveUDPAddr("udp", msg.IP+DeamonPort)
 	msg.Type = "LanGenius-RemoteControlCmd"
 	b, _ := json.Marshal(msg)
 	deamonConn.WriteToUDP(b, sendAddr)
