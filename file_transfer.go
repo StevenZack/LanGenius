@@ -188,6 +188,9 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, "OK")
 }
+func handleFolderReceived(m Msg) {
+	mEventHandler.OnFolderReceived(m.Message)
+}
 func AddFile(str string) {
 	if !contains(str, "/") {
 		return

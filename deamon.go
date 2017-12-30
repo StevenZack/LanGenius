@@ -53,6 +53,8 @@ func routeUdpMsg(msg Msg) {
 		handleRemoteControlCmd(msg)
 	case "LanGenius-Message":
 		handleMessage(msg)
+	case "LanGenius-FolderReceived":
+		handleFolderReceived(msg)
 	}
 }
 func handleDeamon(msg Msg) {

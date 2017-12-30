@@ -16,6 +16,7 @@ var (
 type EventHandler interface {
 	OnClipboardReceived(string, bool)
 	OnFileReceived(string)
+	OnFolderReceived(string)
 	OnDeviceOnline(string)
 	OnDeviceOffline(string)
 	OnRemoteControlCmdReceived(string)
