@@ -53,21 +53,21 @@
     function DoDownload() {
         var sl = document.getElementById("sl_os")
         if (sl.value == "windows") {
-            window.open('http://stevenzack.github.io/langenius/res/langenius-windows-setup.exe')
+            window.open('res/langenius-windows-setup.exe')
             var blk = document.getElementById('tag_windows')
             blk.style.backgroundColor = '#fff'
             blk.style.boxShadow = '2px 2px 2px #000'
             var bd = document.getElementsByTagName('body')[0]
             bd.style.backgroundColor = '#aaa'
         } else if (sl.value == 'linux') {
-            window.open('http://stevenzack.github.io/langenius/res/langenius-linux-amd64.tar.bz2')
+            window.open('res/langenius-linux-amd64.tar.bz2')
             var blk = document.getElementById('tag_linux')
             blk.style.backgroundColor = '#fff'
             blk.style.boxShadow = '2px 2px 2px #000'
             var bd = document.getElementsByTagName('body')[0]
             bd.style.backgroundColor = '#aaa'
         } else if (sl.value == 'android') {
-            window.open('http://stevenzack.github.io/langenius/res/langenius-android.apk')
+            window.open('res/langenius-android.apk')
             var blk = document.getElementById('tag_android')
             blk.style.backgroundColor = '#fff'
             blk.style.boxShadow = '2px 2px 2px #000'
