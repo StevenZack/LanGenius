@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html style="display: flex;flex-direction: column;align-items: center;">
+
+<head>
+    <title>局域网精灵 - 局域网传文件利器 !</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0 user-scalable=no">
+    <script type="text/javascript">
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    function check_os() {
+        if (navigator.userAgent.indexOf("Windows") != -1) {
+            return "windows"
+        }
+        if (navigator.userAgent.indexOf("Android") != -1) {
+            return "android"
+        }
+        return "linux"
+    }
+
+
+    function initialMe() {
+        var sl = document.getElementById("sl_os")
+        sl.value = check_os()
+        var str_lang = getCookie("lang")
+        if (str_lang == null || str_lang == '') {
+            if (navigator.language == "en-US") {
+                setCookie("lang", "en-US", 365)
+                location.href = 'index_en.html'
+            } else {
+                setCookie("lang", "zh-CN", 365)
+            }
+        }
+        if (str_lang == "en-US") {
+            location.href = 'index_en.html'
+        }
+    }
+    function DoDownload() {
+        var sl = document.getElementById("sl_os")
+        if (sl.value == "windows") {
+            window.open('http://stevenzack.github.io/langenius/res/langenius-windows-setup.exe')
+            var blk = document.getElementById('tag_windows')
+            blk.style.backgroundColor = '#fff'
+            blk.style.boxShadow = '2px 2px 2px #000'
+            var bd = document.getElementsByTagName('body')[0]
+            bd.style.backgroundColor = '#aaa'
+        } else if (sl.value == 'linux') {
+            window.open('http://stevenzack.github.io/langenius/res/langenius-linux-amd64.tar.bz2')
+            var blk = document.getElementById('tag_linux')
+            blk.style.backgroundColor = '#fff'
+            blk.style.boxShadow = '2px 2px 2px #000'
+            var bd = document.getElementsByTagName('body')[0]
+            bd.style.backgroundColor = '#aaa'
+        } else if (sl.value == 'android') {
+            window.open('http://stevenzack.github.io/langenius/res/langenius-android.apk')
+            var blk = document.getElementById('tag_android')
+            blk.style.backgroundColor = '#fff'
+            blk.style.boxShadow = '2px 2px 2px #000'
+            var bd = document.getElementsByTagName('body')[0]
+            bd.style.backgroundColor = '#aaa'
+        }
+        location.href = '#tag_' + sl.value
+    }
+    setTimeout("initialMe()", 100)
+    </script>
+    <style type="text/css">
+    a {
+        cursor: pointer;
+    }
+
+    .command {
+        padding: 5px;
+        background-color: #bbb;
+        border-radius: 3px;
+        color: green;
+        margin: 0px;
+    }
+
+    .nobr {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #tag_windows,
+    #tag_linux,
+    #tag_android {
+        padding: 5px;
+        border-radius: 5px;
+    }
+    pre{
+        margin: 0px;padding: 0px;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex;flex-direction: column;align-items: stretch;font-family: sans-serif;max-width: 700px;width: 100%;">
+        <h1 style="color: #444">局域网精灵 <a href="index_en.html"  style="font-size: 18px;">English</a>
+	</h1>
+        <a href="donate.html">捐赠</a>
+        <h4 style="color: #444">局域网传文件利器 !</h4>
+        <h4 style="color: green;margin: 0px;padding: 0px;">版本消息: v5.0.2 Android发布!</h4>
+        <div style="align-items: center;display: flex;flex-direction: column;">
+            <img src="res/share.jpg" style="max-width: 200px;box-shadow: 2px 2px 2px #aaa">
+            <br>
+            <br>
+            <div style="background-color: #666;display: flex;flex-direction: row;max-width: 200px;width: 100%;align-items: stretch;border-radius: 5px;">
+                <a id="bt_main_download" onclick="DoDownload()" style="color: #fff;flex-grow: 1;padding: 10px;">下载</a>
+                <select style="flex-grow: 1;margin: 3px;" id="sl_os">
+                    <option value="windows">Windows</option>
+                    <option value="linux">Linux</option>
+                    <option value="android">安卓</option>
+                </select>
+            </div>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <div id="tag_windows">
+            <h1>Windows: 安装步骤</h1>
+            <h4>1.双击下载的文件即可安装</h4>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <div id="tag_linux">
+            <h1>Linux: 安装步骤</h1>
+            <h4 class="nobr">1.把下载的文件解压:</h4>
+            <h4 class="command">sudo tar xvf langenius-linux-amd64.tar.bz2 -C /opt</h4>
+            <h4 class="nobr">2.安装</h4>
+            <h4 class="command">cd /opt/langenius</h4>
+            <h4 class="command">sudo ./install.sh</h4>
+            <h4 class="nobr">3.让它可以在任何位置被执行</h4>
+            <h4 class="command">sudo ln -s /opt/langenius/langenius /usr/bin</h4>
+            <h4 class="nobr">4.开始分享你的文件到局域网上面吧!</h4>
+            <h4 class="command">langenius ./a.txt</h4>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <div id="tag_android">
+            <h1>安卓: 安装步骤</h1>
+            <h4 class="nobr">1.点击 .apk 文件即可安装</h4>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+    </div>
+</body>
+
+</html>
