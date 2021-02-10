@@ -1,0 +1,28 @@
+/* body */
+body{
+    padding: 0;
+    margin: 0;
+}
+/* layout */
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.column{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.appbar{
+    background-color: white;
+}
+/* color */
+.white{
+    color: white;
+}
+.bg-white{
+    background-color: white !important;
+}
