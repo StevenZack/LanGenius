@@ -5,31 +5,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAN Genius - Transfering file easily</title>
-    <link rel="stylesheet" href="/res/css/lib.min.css">
+    <title>局域网精灵 - 局域网传文件利器</title>
+    <link rel="stylesheet" href="/langenius/res/css/lib.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css"
         integrity="sha384-cLRrMq39HOZdvE0j6yBojO4+1PrHfB7a9l5qLcmRm/fiWXYY+CndJPmyu5FV/9Tw" crossorigin="anonymous" />
     <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js"
         integrity="sha384-gCMZcshYKOGRX9r6wbDrvF+TcCCswSHFucUzUPwka+Gr+uHgjlYvkABr95TCOz3A"
         crossorigin="anonymous"></script>
-    <script src="/res/js/vars.js"></script>
+    <script src="/langenius/res/js/vars.js"></script>
 </head>
 
-<body style="background-image: url(/res/image/bg.webp);background-size: 1920px;">
+<body style="background-image: url(/langenius/res/image/bg.webp);background-size: 1920px;">
     <div class="mdui-appbar appbar">
         <div class="mdui-toolbar mdui-color-theme">
             <a href="javascript:;" class="mdui-btn mdui-btn-icon">
-                <img src="/res/image/ic_launcher_round.webp" alt="icon" width="40" height="40">
+                <img src="/langenius/res/image/ic_launcher_round.webp" alt="icon" width="40" height="40">
             </a>
-            <a href="/" class="mdui-typo-headline">LAN Genius</a>
+            <a href="/langenius/index.html" class="mdui-typo-headline">局域网精灵</a>
             <div class="mdui-toolbar-spacer"></div>
-            <select onchange="changeLanguage(this)" >
-                <option value="en" selected>English</option>
-                <option value="zh">中文</option>
+            <select onchange="changeLanguage(this)">
+                <option value="zh" selected>中文</option>
+                <option value="en">English</option>
             </select>
             <a href="download.html" class="mdui-btn">
                 <i class="mdui-icon material-icons">file_download</i>
-                Download
             </a>
             <!-- <a href="price.html" class="mdui-btn">
                 <i class="mdui-icon material-icons">shopping_cart</i>
@@ -39,18 +38,13 @@
     </div>
     <br><br><br>
     <div class="column">
-        <img src="/res/image/ic_launcher.webp" alt="icon">
-        <h1 class="white">LAN Genius</h1>
-        <h4 class="white">Transfering file on LAN easily</h4>
+        <img src="/langenius/res/image/ic_launcher.webp" alt="icon">
+        <h1 class="white">局域网精灵</h1>
+        <h4 class="white">通过WiFi传文件，不再需要数据线！</h4>
         <div class="row">
-            <a href="download.html" class="mdui-btn mdui-btn-raised mdui-ripple bg-white">Download</a>
+            <a href="download.html" class="mdui-btn mdui-btn-raised mdui-ripple bg-white">下载</a>
         </div>
     </div>
-    <script>
-        if(localStorage.getItem('language')!='select'&&navigator.language.indexOf('zh')>-1){
-            location.href='/zh/index.html'
-        }
-    </script>
 </body>
 
 </html>

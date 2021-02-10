@@ -8,10 +8,10 @@ window.downloads = {
 function changeLanguage(me) {
     switch (me.value) {
         case 'en':
-            location.href = '/';
+            location.href = '/langenius/en/index.html';
             break;
         case 'zh':
-            location.href = '/zh/index.html';
+            location.href = '/langenius/index.html';
             break;
     }
     localStorage.setItem('language','select')
